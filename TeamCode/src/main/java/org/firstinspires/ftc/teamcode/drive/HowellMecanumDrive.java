@@ -63,7 +63,6 @@ public class HowellMecanumDrive extends MecanumDrive {
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
-    public static PIDCoefficients TRANSLATIONAL_PID2 = new PIDCoefficients(8, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1;
