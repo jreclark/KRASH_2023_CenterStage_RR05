@@ -70,8 +70,7 @@ public class Drive extends LinearOpMode {
             if(gamepad1.right_bumper) {fieldRel = true;}
             if(gamepad1.left_bumper) {fieldRel = false;}
             if(gamepad1.x) {
-                Pose2d pose = drive.getPoseEstimate();
-                drive.setPoseEstimate(new Pose2d(pose.getX(), pose.getY(), 0));
+                drive.resetGyro();
             }
         }
     }
