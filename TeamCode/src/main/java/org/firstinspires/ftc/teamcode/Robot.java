@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.HowellMecanumDrive;
+import org.firstinspires.ftc.teamcode.DriveTrain.HowellMecanumDrive;
 
 /**
  * Robot class should contain all of your robot subsystems.
@@ -15,12 +15,14 @@ public class Robot {
     private Telemetry telemetry;
 
     public HowellMecanumDrive drive;
+    public Arm arm;
 
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, boolean isTele) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
 
         drive = new HowellMecanumDrive(hardwareMap, telemetry);
+        arm = new Arm(hardwareMap, telemetry);
     }
 
 

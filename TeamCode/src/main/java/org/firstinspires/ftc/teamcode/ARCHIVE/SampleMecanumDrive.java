@@ -35,17 +35,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.kV;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.

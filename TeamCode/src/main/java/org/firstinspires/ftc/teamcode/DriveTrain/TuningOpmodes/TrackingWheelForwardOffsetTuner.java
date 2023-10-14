@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.TuningOpmodes;
+package org.firstinspires.ftc.teamcode.DriveTrain.TuningOpmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.util.MovingStatistics;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.teamcode.drive.HowellMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.DriveTrain.HowellMecanumDrive;
+import org.firstinspires.ftc.teamcode.DriveTrain.StandardTrackingWheelLocalizer;
 
 /**
  * This routine determines the effective forward offset for the lateral tracking wheel.

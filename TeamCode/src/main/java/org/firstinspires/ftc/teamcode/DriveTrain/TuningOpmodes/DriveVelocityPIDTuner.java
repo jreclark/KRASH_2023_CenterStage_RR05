@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.TuningOpmodes;
+package org.firstinspires.ftc.teamcode.DriveTrain.TuningOpmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -18,11 +18,11 @@ import org.firstinspires.ftc.teamcode.ARCHIVE.SampleMecanumDrive;
 
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.kV;
 
 /*
  * This routine is designed to tune the PID coefficients used by the REV Expansion Hubs for closed-
