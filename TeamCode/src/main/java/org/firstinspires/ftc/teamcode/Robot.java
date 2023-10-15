@@ -16,6 +16,7 @@ public class Robot {
 
     public HowellMecanumDrive drive;
     public Arm arm;
+    public DroneLauncher droneLauncher;
 
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, boolean isTele) {
         this.hardwareMap = hardwareMap;
@@ -23,8 +24,6 @@ public class Robot {
 
         drive = new HowellMecanumDrive(hardwareMap, telemetry);
         arm = new Arm(hardwareMap, telemetry);
+        //droneLauncher = new DroneLauncher(hardwareMap, telemetry);
     }
-
-
-
 }
