@@ -1,15 +1,10 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.teamcode.Arm;
-import org.firstinspires.ftc.teamcode.DriveTrain.HowellMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.ButtonState;
 
 /**
@@ -28,10 +23,10 @@ public class ServoTester extends LinearOpMode {
         int servoSelect = 0;
         int lastServoSelect = 0;
 
-        ButtonState selectUp = new ButtonState(gamepad1, ButtonState.Button.dpad_up);
-        ButtonState selectDown = new ButtonState(gamepad1, ButtonState.Button.dpad_down);
-        ButtonState posDec = new ButtonState(gamepad1, ButtonState.Button.dpad_left);
-        ButtonState posInc = new ButtonState(gamepad1, ButtonState.Button.dpad_right);
+        ButtonState posInc = new ButtonState(gamepad1, ButtonState.Button.dpad_up);
+        ButtonState posDec = new ButtonState(gamepad1, ButtonState.Button.dpad_down);
+        ButtonState selectDown = new ButtonState(gamepad1, ButtonState.Button.dpad_left);
+        ButtonState selectUp = new ButtonState(gamepad1, ButtonState.Button.dpad_right);
 
         waitForStart();
 
@@ -40,7 +35,7 @@ public class ServoTester extends LinearOpMode {
             telemetry.addLine("On selecting a servo, it will default to pos = 0.5.");
             telemetry.addLine("Press d-pad Left/Right to move servo by 0.05");
             telemetry.addLine();
-            telemetry.addLine("Current Servo: " + servo.getDeviceName());
+            telemetry.addLine("Current Servo: " + servo.getPortNumber());
             telemetry.addLine("Current Position: " + servo.getPosition());
 
             if (selectUp.newPress()) {
@@ -69,14 +64,16 @@ public class ServoTester extends LinearOpMode {
                     servo = arm.gripper;
                     break;
                 case 1:
-                    servo = arm.pusher;
+                    servo = arm.ejector;
                     break;
                 case 2:
-                    servo = arm.rotater;
+                    servo = arm.swivel;
                     break;
             }
 
-            if(lastServoSelect != servoSelect) {servo.setPosition(0.5);}
+            if(lastServoSelect != servoSelect) {
+                servo.setPosition(0.5);
+            lastServoSelect = servoSelect;}
 
             telemetry.update();
 

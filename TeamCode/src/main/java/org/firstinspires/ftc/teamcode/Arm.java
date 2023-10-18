@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Arm {
-    public Servo gripper, pusher, rotater;
+    public Servo gripper, ejector, swivel;
+    public DcMotorEx shoulder;
 
     private Telemetry telemetry;
 
@@ -25,9 +27,9 @@ public class Arm {
         this.telemetry = telemetry;
 
         gripper = hardwareMap.get(Servo.class, "gripper");
-        pusher = hardwareMap.get(Servo.class, "pusher");
-        rotater = hardwareMap.get(Servo.class, "rotater");
-
+        ejector = hardwareMap.get(Servo.class, "ejector");
+        swivel = hardwareMap.get(Servo.class, "swivel");
+        shoulder = hardwareMap.get(DcMotorEx.class,"shoulder");
     }
 
     public void setGripper(double pos){
@@ -35,11 +37,11 @@ public class Arm {
     }
 
     public void setPusher(double pos){
-        pusher.setPosition(pos);
+        ejector.setPosition(pos);
     }
 
-    public void setRotater(double pos){
-        rotater.setPosition(pos);
+    public void setSwivel(double pos) {
+        swivel.setPosition(pos);
     }
 
     public void gripperRelease(){
@@ -85,4 +87,9 @@ public class Arm {
         gripperRelease();
         pusherRetract();
     }
+
+    public void runShoulder(double power){
+        shoulder.setPower(power);
+    }
+
 }

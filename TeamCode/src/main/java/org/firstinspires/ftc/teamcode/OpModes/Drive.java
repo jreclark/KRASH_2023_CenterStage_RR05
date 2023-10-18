@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.DriveTrain.HowellMecanumDrive;
+import org.firstinspires.ftc.teamcode.Robot;
 
 /**
 
@@ -18,13 +19,12 @@ public class Drive extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        // Initialize MecanumDrive
-        //TODO Need to add pose transfer
-        HowellMecanumDrive drive = new HowellMecanumDrive(hardwareMap, telemetry);
+        // Initialize Robot
+        Robot m_robot = new Robot(hardwareMap, telemetry, true);
 
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        m_robot.drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Retrieve our pose from the PoseStorage.currentPose static field
         // See AutoTransferPose.java for further details
@@ -36,8 +36,8 @@ public class Drive extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested()) {
             // Read pose
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            double poseHeading = drive.getExternalHeading();
+            Pose2d poseEstimate = m_robot.drive.getPoseEstimate();
+            double poseHeading = m_robot.drive.getExternalHeading();  //Use the gyro instead of odometry
             if (!fieldRel){ poseHeading = 0;}
 
             // Create a vector from the gamepad x/y inputs
@@ -49,7 +49,7 @@ public class Drive extends LinearOpMode {
 
             // Pass in the rotated input + right stick value for rotation
             // Rotation is not part of the rotated input thus must be passed in separately
-            drive.setWeightedDrivePower(
+            m_robot.drive.setWeightedDrivePower(
                     new Pose2d(
                             input.getX(),
                             input.getY(),
@@ -58,20 +58,22 @@ public class Drive extends LinearOpMode {
             );
 
             // Update everything. Odometry. Etc.
-            drive.update();
+            m_robot.drive.update();
 
             // Print pose to telemetry
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", drive.getExternalHeading());
+            telemetry.addData("heading", m_robot.drive.getExternalHeading());
             telemetry.addData("Field Rel", fieldRel);
             telemetry.update();
 
             if(gamepad1.right_bumper) {fieldRel = true;}
             if(gamepad1.left_bumper) {fieldRel = false;}
             if(gamepad1.x) {
-                drive.resetGyro();
+                m_robot.drive.resetGyro();
             }
+
+            m_robot.arm.runShoulder(-gamepad2.right_stick_y*0.5);
         }
     }
 }
