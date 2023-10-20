@@ -65,6 +65,8 @@ public class Drive extends LinearOpMode {
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", m_robot.drive.getExternalHeading());
             telemetry.addData("Field Rel", fieldRel);
+            telemetry.addLine();
+            telemetry.addData("arm position", m_robot.arm.getShoulderPosition());
             telemetry.update();
 
             if(gamepad1.right_bumper) {fieldRel = true;}
@@ -73,7 +75,33 @@ public class Drive extends LinearOpMode {
                 m_robot.drive.resetGyro();
             }
 
-            m_robot.arm.runShoulder(-gamepad2.right_stick_y*0.5);
+            m_robot.arm.runShoulder(-gamepad2.right_stick_y*0.75);
+            m_robot.arm.runExtension(gamepad2.left_stick_y*0.5);
+            if(Math.abs(gamepad2.right_stick_x)>0.1){m_robot.arm.runSwivel(gamepad2.right_stick_x);}
+
+            if(gamepad2.dpad_down){
+                m_robot.arm.readyPickup();
+            }
+
+            if(gamepad2.left_trigger >= 0.5){
+                m_robot.arm.pickup();
+            }
+
+            if(gamepad2.dpad_up){
+                m_robot.arm.readyDeliverFront();
+            }
+
+            if(gamepad2.right_bumper){
+                m_robot.arm.drop1();
+            }
+
+            if(gamepad2.left_bumper){
+                m_robot.arm.drop2();
+            }
+
+            if(gamepad2.a){
+                m_robot.arm.wiggle();
+            }
         }
     }
 }
