@@ -17,6 +17,7 @@ public class Arm {
     public DcMotorEx shoulder;
     public DcMotorEx extension;
     public Encoder shoulderEncoder;
+    public Encoder extensionEncoder;
 
     private Telemetry telemetry;
 
@@ -25,12 +26,12 @@ public class Arm {
     final double GRIPPER_HOLD_ALL = 0.1;
 
     final double PUSHER_RETRACT = 1.0;
-    final double PUSHER_PUSH1 =0.55;
-    final double PUSHER_PUSH2 = 0.75;
+    final double PUSHER_PUSH1 =0.65;
+    final double PUSHER_PUSH2 = 0.55;
 
-    final double ROTATER_PICKUP = 0.18;
-    final double ROTATER_PLACE_FRONT = 0.35;
-    final double ROTATER_HOLD = 0.85;
+    final double SWIVEL_PICKUP = 0.18;
+    final double SWIVEL_PLACE_FRONT = 0.35;
+    final double SWIVEL_HOLD = 0.85;
 
     public Arm(HardwareMap hardwareMap, Telemetry telemetry){
         this.telemetry = telemetry;
@@ -46,6 +47,7 @@ public class Arm {
         extension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         shoulderEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "shoulder"));
+        extensionEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "extension"));
     }
 
     public void setGripper(double pos){
@@ -84,7 +86,7 @@ public class Arm {
         setPusher(PUSHER_PUSH2);
     }
 
-    public void swivelPickup(){setSwivel(ROTATER_PICKUP);}
+    public void swivelPickup(){setSwivel(SWIVEL_PICKUP);}
 
     public void readyPickup(){
         pusherRetract();
@@ -108,27 +110,29 @@ public class Arm {
     }
 
     public void pickup(){
-        setGripper(GRIPPER_HOLD_ALL);
+        gripperHoldAll();
     }
 
     public void readyDeliverFront(){
-        setSwivel(ROTATER_PLACE_FRONT);
+        setSwivel(SWIVEL_PLACE_FRONT);
     }
 
     public void wiggle(){
-        setSwivel(ROTATER_PICKUP*0.9);
-        Utils.sleep(500);
-        setSwivel(ROTATER_PICKUP*1.1);
-        Utils.sleep(500);
-        setSwivel(ROTATER_PICKUP);
-
+        double currentPos = swivel.getPosition();
+        setSwivel(currentPos-0.07);
+        Utils.sleep(250);
+        setSwivel(currentPos+0.07);
+        Utils.sleep(250);
+        setSwivel(currentPos);
     }
 
     public double getShoulderPosition(){
         return shoulderEncoder.getCurrentPosition();
     }
 
-
+    public double getExtensionPosition(){
+        return extensionEncoder.getCurrentPosition();
+    }
 
 
 

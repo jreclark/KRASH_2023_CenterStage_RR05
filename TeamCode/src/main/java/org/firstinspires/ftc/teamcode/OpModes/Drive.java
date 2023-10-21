@@ -66,7 +66,9 @@ public class Drive extends LinearOpMode {
             telemetry.addData("heading", m_robot.drive.getExternalHeading());
             telemetry.addData("Field Rel", fieldRel);
             telemetry.addLine();
-            telemetry.addData("arm position", m_robot.arm.getShoulderPosition());
+            telemetry.addData("Arm position", m_robot.arm.getShoulderPosition());
+            telemetry.addData("Extension position", m_robot.arm.getExtensionPosition());
+            telemetry.addData("Swivel position", m_robot.arm.swivel.getPosition());
             telemetry.update();
 
             if(gamepad1.right_bumper) {fieldRel = true;}
@@ -83,7 +85,7 @@ public class Drive extends LinearOpMode {
                 m_robot.arm.readyPickup();
             }
 
-            if(gamepad2.left_trigger >= 0.5){
+            if(gamepad2.right_trigger >= 0.5){
                 m_robot.arm.pickup();
             }
 
