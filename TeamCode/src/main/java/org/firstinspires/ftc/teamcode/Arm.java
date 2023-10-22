@@ -32,6 +32,27 @@ public class Arm {
     final double SWIVEL_PICKUP = 0.18;
     final double SWIVEL_PLACE_FRONT = 0.35;
     final double SWIVEL_HOLD = 0.85;
+    final double SWIVEL_BACK_LOW = 0;
+    final double SWIVEL_BACK_HIGH = 0;
+
+    final int ARM_MIN = 0;
+    final int ARM_MIN_SLOW = 400;
+    final int ARM_MAX_SLOW = 7600;
+    final int ARM_MAX = 8000;
+
+    final int EXTENSION_MIN = 0;
+    final int EXTENSION_MIN_SLOW = 75;
+    final int EXTENSION_MAX_SLOW = 575;
+    final int EXTENSION_MAX = 650;
+
+    public enum Arm_Modes {
+        PICKUP,
+        HOLD,
+        DELIVER_FRONT,
+        DELIVER_BACK_LOW,
+        DELIVER_BACK_HIGH,
+        MANUAL
+    }
 
     public Arm(HardwareMap hardwareMap, Telemetry telemetry){
         this.telemetry = telemetry;
@@ -42,12 +63,15 @@ public class Arm {
 
         shoulder = hardwareMap.get(DcMotorEx.class,"shoulder");
         shoulder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         extension = hardwareMap.get(DcMotorEx.class,"extension");
         extension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        extension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         shoulderEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "shoulder"));
         extensionEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "extension"));
+        extensionEncoder.setDirection(Encoder.Direction.REVERSE);
     }
 
     public void setGripper(double pos){
@@ -86,7 +110,13 @@ public class Arm {
         setPusher(PUSHER_PUSH2);
     }
 
+
     public void swivelPickup(){setSwivel(SWIVEL_PICKUP);}
+    public void swivelHold(){setSwivel(SWIVEL_HOLD);}
+    public void readyDeliverBackHigh(){setSwivel(SWIVEL_BACK_HIGH);}
+    public void readyDeliverBackLow(){setSwivel(SWIVEL_BACK_LOW);}
+    public void readyDeliverFront(){setSwivel(SWIVEL_PLACE_FRONT);}
+
 
     public void readyPickup(){
         pusherRetract();
@@ -113,9 +143,6 @@ public class Arm {
         gripperHoldAll();
     }
 
-    public void readyDeliverFront(){
-        setSwivel(SWIVEL_PLACE_FRONT);
-    }
 
     public void wiggle(){
         double currentPos = swivel.getPosition();
@@ -134,14 +161,12 @@ public class Arm {
         return extensionEncoder.getCurrentPosition();
     }
 
-
-
     public void runShoulder(double power){
-        shoulder.setPower(power);
+        shoulder.setPower(limitPower(power, ARM_MIN, ARM_MIN_SLOW, ARM_MAX, ARM_MAX_SLOW, shoulderEncoder));
     }
 
     public void runExtension(double power){
-        extension.setPower(power);
+        extension.setPower(limitPower(power, EXTENSION_MIN, EXTENSION_MIN_SLOW, EXTENSION_MAX, EXTENSION_MAX_SLOW, extensionEncoder));
     }
 
     public void runSwivel(double power){
@@ -149,6 +174,26 @@ public class Arm {
         swivel.setPosition(currentPos + power / 100);
     }
 
+    public double limitPower(double power, int min, int minSlow, int max, int maxSlow, Encoder encoder){
+        double slow = 0.3;
+        int pos = encoder.getCurrentPosition();
+        if(isInRange(pos, minSlow, maxSlow)){
+            return power;
+        } else if ((power >= 0) && isInRange(pos, maxSlow, max)){
+            return power*slow;
+        } else if ((power >=0) && (pos >= max)){
+            return 0;
+        } else if ((power < 0) && isInRange(pos, min, minSlow)){
+            return power*slow;
+        } else if ((power < 0) && (pos <= min)){
+            return 0;
+        } else {
+            return power;
+        }
+    }
 
+    public boolean isInRange(int val, int min, int max){
+        return (val >= min) && (val <= max);
+    }
 
 }

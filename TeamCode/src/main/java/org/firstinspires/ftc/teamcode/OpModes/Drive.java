@@ -77,32 +77,42 @@ public class Drive extends LinearOpMode {
                 m_robot.drive.resetGyro();
             }
 
+            //ARM Controls
             m_robot.arm.runShoulder(-gamepad2.right_stick_y*0.75);
             m_robot.arm.runExtension(gamepad2.left_stick_y*0.5);
             if(Math.abs(gamepad2.right_stick_x)>0.1){m_robot.arm.runSwivel(gamepad2.right_stick_x);}
 
+            //D-Pad Definitions
             if(gamepad2.dpad_down){
                 m_robot.arm.readyPickup();
             }
+            if(gamepad2.dpad_right){
+                m_robot.arm.readyDeliverFront();
+            }
+            if(gamepad2.dpad_up){
+                m_robot.arm.readyDeliverBackHigh();
+            }
+            if(gamepad2.dpad_left){
+                m_robot.arm.readyDeliverBackLow();
+            }
 
+            //Trigger / Shoulder Controls
             if(gamepad2.right_trigger >= 0.5){
                 m_robot.arm.pickup();
             }
-
-            if(gamepad2.dpad_up){
-                m_robot.arm.readyDeliverFront();
-            }
-
             if(gamepad2.right_bumper){
                 m_robot.arm.drop1();
             }
-
             if(gamepad2.left_bumper){
                 m_robot.arm.drop2();
             }
 
+            //Button Controls
             if(gamepad2.a){
                 m_robot.arm.wiggle();
+            }
+            if(gamepad2.y){
+                m_robot.arm.swivelHold();
             }
         }
     }
