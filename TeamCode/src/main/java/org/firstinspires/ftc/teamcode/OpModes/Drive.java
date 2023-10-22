@@ -79,7 +79,7 @@ public class Drive extends LinearOpMode {
 
             //ARM Controls
             m_robot.arm.runShoulder(-gamepad2.right_stick_y*0.75);
-            m_robot.arm.runExtension(gamepad2.left_stick_y*0.5);
+            m_robot.arm.runExtension(-gamepad2.left_stick_y*0.5);
             if(Math.abs(gamepad2.right_stick_x)>0.1){m_robot.arm.runSwivel(gamepad2.right_stick_x);}
 
             //D-Pad Definitions

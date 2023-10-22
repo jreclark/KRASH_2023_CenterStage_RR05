@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -30,20 +31,20 @@ public class Arm {
     final double PUSHER_PUSH2 = 0.55;
 
     final double SWIVEL_PICKUP = 0.18;
-    final double SWIVEL_PLACE_FRONT = 0.35;
+    final double SWIVEL_PLACE_FRONT = 0.233;
     final double SWIVEL_HOLD = 0.85;
-    final double SWIVEL_BACK_LOW = 0;
-    final double SWIVEL_BACK_HIGH = 0;
+    final double SWIVEL_BACK_LOW = 0.61;
+    final double SWIVEL_BACK_HIGH = 0.71;
 
     final int ARM_MIN = 0;
     final int ARM_MIN_SLOW = 400;
-    final int ARM_MAX_SLOW = 7600;
-    final int ARM_MAX = 8000;
+    final int ARM_MAX_SLOW = 5300;
+    final int ARM_MAX = 6500;
 
     final int EXTENSION_MIN = 0;
     final int EXTENSION_MIN_SLOW = 75;
-    final int EXTENSION_MAX_SLOW = 575;
-    final int EXTENSION_MAX = 650;
+    final int EXTENSION_MAX_SLOW = 425;
+    final int EXTENSION_MAX = 450;
 
     public enum Arm_Modes {
         PICKUP,
@@ -68,6 +69,7 @@ public class Arm {
         extension = hardwareMap.get(DcMotorEx.class,"extension");
         extension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         extension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        extension.setDirection(DcMotorSimple.Direction.REVERSE);
 
         shoulderEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "shoulder"));
         extensionEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "extension"));
@@ -177,9 +179,10 @@ public class Arm {
     public double limitPower(double power, int min, int minSlow, int max, int maxSlow, Encoder encoder){
         double slow = 0.3;
         int pos = encoder.getCurrentPosition();
-        if(isInRange(pos, minSlow, maxSlow)){
-            return power;
-        } else if ((power >= 0) && isInRange(pos, maxSlow, max)){
+//        if(isInRange(pos, minSlow, maxSlow)){
+//            return power;
+//        } else
+        if ((power >= 0) && isInRange(pos, maxSlow, max)){
             return power*slow;
         } else if ((power >=0) && (pos >= max)){
             return 0;
