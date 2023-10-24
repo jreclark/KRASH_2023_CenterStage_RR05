@@ -26,6 +26,9 @@ public class Arm {
     final double GRIPPER_RELEASE_ONE = 0.05;
     final double GRIPPER_HOLD_ALL = 0.1;
 
+    final double WIGGLE_WIGGLE = 0.02; //was +/-0.07
+    final long WIGGLE_DELAY = 500;
+
     final double PUSHER_RETRACT = 1.0;
     final double PUSHER_PUSH1 =0.65;
     final double PUSHER_PUSH2 = 0.55;
@@ -112,13 +115,11 @@ public class Arm {
         setPusher(PUSHER_PUSH2);
     }
 
-
     public void swivelPickup(){setSwivel(SWIVEL_PICKUP);}
     public void swivelHold(){setSwivel(SWIVEL_HOLD);}
     public void readyDeliverBackHigh(){setSwivel(SWIVEL_BACK_HIGH);}
     public void readyDeliverBackLow(){setSwivel(SWIVEL_BACK_LOW);}
     public void readyDeliverFront(){setSwivel(SWIVEL_PLACE_FRONT);}
-
 
     public void readyPickup(){
         pusherRetract();
@@ -145,13 +146,12 @@ public class Arm {
         gripperHoldAll();
     }
 
-
     public void wiggle(){
         double currentPos = swivel.getPosition();
-        setSwivel(currentPos-0.07);
-        Utils.sleep(250);
-        setSwivel(currentPos+0.07);
-        Utils.sleep(250);
+        setSwivel(currentPos-WIGGLE_WIGGLE);
+        Utils.sleep(WIGGLE_DELAY);
+        setSwivel(currentPos+WIGGLE_WIGGLE);
+        Utils.sleep(WIGGLE_DELAY);
         setSwivel(currentPos);
     }
 
