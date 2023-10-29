@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.MAX_VEL;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -32,6 +34,8 @@ public class Drive extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
+
+        m_robot.drive.setMotorPowers(-.5,-.5,-.5,-.5); // Set motor power to 50%???
 
         while (opModeIsActive() && !isStopRequested()) {
             // Read pose
@@ -112,6 +116,10 @@ public class Drive extends LinearOpMode {
             }
             if(gamepad2.y){
                 m_robot.arm.swivelHold();
+            }
+
+            if (gamepad1.b) {
+                m_robot.drive.setDrivePower(MAX_VEL/2);
             }
         }
     }

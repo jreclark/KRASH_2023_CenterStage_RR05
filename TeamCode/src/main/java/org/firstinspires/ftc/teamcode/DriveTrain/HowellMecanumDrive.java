@@ -306,6 +306,8 @@ public class HowellMecanumDrive extends MecanumDrive {
         leftRear.setPower(v1);
         rightRear.setPower(v2);
         rightFront.setPower(v3);
+
+
     }
 
     @Override
@@ -354,5 +356,8 @@ public class HowellMecanumDrive extends MecanumDrive {
 
     public void resetGyro() {
         imu.resetYaw();
+    }
+
+    public void setDrivePower(double v) {
     }
 }
