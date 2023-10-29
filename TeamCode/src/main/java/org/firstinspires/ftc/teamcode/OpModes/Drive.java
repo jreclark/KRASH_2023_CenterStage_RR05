@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class Drive extends LinearOpMode {
     public boolean fieldRel = true;
 
-
     @Override
     public void runOpMode() throws InterruptedException {
         // Initialize Robot

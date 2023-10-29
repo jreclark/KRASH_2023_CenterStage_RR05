@@ -29,7 +29,7 @@ public class Arm {
     final double WIGGLE_WIGGLE = 0.02; //was +/-0.07
     final long WIGGLE_DELAY = 500;
 
-    final double PUSHER_RETRACT = 1.0;
+    final double PUSHER_RETRACT = 0; //1.0
     final double PUSHER_PUSH1 =0.65;
     final double PUSHER_PUSH2 = 0.55;
 
