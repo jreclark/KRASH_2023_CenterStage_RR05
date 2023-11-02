@@ -358,6 +358,4 @@ public class HowellMecanumDrive extends MecanumDrive {
         imu.resetYaw();
     }
 
-    public void setDrivePower(double v) {
-    }
 }

@@ -26,6 +26,6 @@ public class Robot {
         drive = new HowellMecanumDrive(hardwareMap, telemetry);
         arm = new Arm(hardwareMap, telemetry);
         //droneLauncher = new DroneLauncher(hardwareMap, telemetry);
-        //climber = new Climber(hardwareMap, telemetry);
+        climber = new Climber(hardwareMap, telemetry);
     }
 }

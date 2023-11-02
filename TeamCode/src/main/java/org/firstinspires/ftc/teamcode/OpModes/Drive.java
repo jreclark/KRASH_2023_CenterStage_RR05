@@ -35,7 +35,7 @@ public class Drive extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        m_robot.drive.setMotorPowers(-.5,-.5,-.5,-.5); // Set motor power to 50%???
+        //m_robot.drive.setMotorPowers(-.5,-.5,-.5,-.5); // Set motor power to 50%???
 
         while (opModeIsActive() && !isStopRequested()) {
             // Read pose
@@ -54,9 +54,9 @@ public class Drive extends LinearOpMode {
             // Rotation is not part of the rotated input thus must be passed in separately
             m_robot.drive.setWeightedDrivePower(
                     new Pose2d(
-                            input.getX(),
-                            input.getY(),
-                            -gamepad1.right_stick_x
+                            Math.pow(input.getX(),3),
+                            Math.pow(input.getY(),3),
+                            Math.pow(-gamepad1.right_stick_x,3)
                     )
             );
 
@@ -81,13 +81,19 @@ public class Drive extends LinearOpMode {
             }
 
             //ARM Controls
-            m_robot.arm.runShoulder(-gamepad2.right_stick_y*0.75);
-            m_robot.arm.runExtension(-gamepad2.left_stick_y*0.5);
-            if(Math.abs(gamepad2.right_stick_x)>0.1){m_robot.arm.runSwivel(gamepad2.right_stick_x);}
+
+//            m_robot.arm.runShoulder(-gamepad2.right_stick_x*1.0);
+//            m_robot.arm.runExtension(-gamepad2.left_stick_y*0.5);
+//            if(Math.abs(gamepad2.right_stick_y)>0.1) {m_robot.arm.runShoulder(-gamepad2.right_stick_y*1.0);}
+//            if(Math.abs(gamepad2.left_stick_y)>0.1) {m_robot.arm.runExtension(-gamepad2.left_stick_y*0.5);}
+            if(Math.abs(gamepad2.left_stick_x)>0.1) {m_robot.arm.runSwivel(gamepad2.left_stick_x);}
 
             //D-Pad Definitions
             if(gamepad2.dpad_down){
                 m_robot.arm.readyPickup();
+            } else {
+                m_robot.arm.runShoulder(gamepad2.right_stick_x*1.0);
+                m_robot.arm.runExtension(-gamepad2.left_stick_y*0.5);
             }
             if(gamepad2.dpad_right){
                 m_robot.arm.readyDeliverFront();
@@ -103,6 +109,9 @@ public class Drive extends LinearOpMode {
             if(gamepad2.right_trigger >= 0.5){
                 m_robot.arm.pickup();
             }
+            if(gamepad2.left_trigger >= 0.2){
+                m_robot.arm.pickupSequence();
+            } else {m_robot.arm.clearInPickupSequence();}
             if(gamepad2.right_bumper){
                 m_robot.arm.drop1();
             }
@@ -117,10 +126,12 @@ public class Drive extends LinearOpMode {
             if(gamepad2.y){
                 m_robot.arm.swivelHold();
             }
+            if(gamepad2.x){
+                m_robot.climber.runClimber(0.5);
+            } else if(gamepad2.b){
+                m_robot.climber.runClimber(-0.5);
+            } else m_robot.climber.runClimber(0);
 
-            if (gamepad1.b) {
-                m_robot.drive.setDrivePower(MAX_VEL/2);
-            }
         }
     }
 }

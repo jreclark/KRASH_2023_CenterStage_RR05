@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.Encoder;
@@ -48,7 +49,17 @@ public class Arm {
     final int EXTENSION_MIN_SLOW = 75;
     final int EXTENSION_MAX_SLOW = 425;
     final int EXTENSION_MAX = 450;
+    
+    final int ARM_READY_PICKUP = 350;
+    final int EXTENSION_READY_PICKUP = 40;
+    
+    final int ARM_PICKUP = 0;
+    final int EXTENSION_PICKUP = 75;
 
+    boolean inPickupSequence = false;
+    ElapsedTime timer = new ElapsedTime();
+    
+    
     public enum Arm_Modes {
         PICKUP,
         HOLD,
@@ -122,6 +133,8 @@ public class Arm {
     public void readyDeliverFront(){setSwivel(SWIVEL_PLACE_FRONT);}
 
     public void readyPickup(){
+        runShoulderToPosition(ARM_READY_PICKUP);
+        runExtensionToPosition(EXTENSION_READY_PICKUP);
         pusherRetract();
         gripperRelease();
         swivelPickup();
@@ -164,10 +177,12 @@ public class Arm {
     }
 
     public void runShoulder(double power){
+        shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shoulder.setPower(limitPower(power, ARM_MIN, ARM_MIN_SLOW, ARM_MAX, ARM_MAX_SLOW, shoulderEncoder));
     }
 
     public void runExtension(double power){
+        extension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         extension.setPower(limitPower(power, EXTENSION_MIN, EXTENSION_MIN_SLOW, EXTENSION_MAX, EXTENSION_MAX_SLOW, extensionEncoder));
     }
 
@@ -197,6 +212,47 @@ public class Arm {
 
     public boolean isInRange(int val, int min, int max){
         return (val >= min) && (val <= max);
+    }
+    
+    public void runShoulderToPosition(int target){
+        shoulder.setTargetPosition(target);
+        shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        shoulder.setPower(1.0);        
+    }
+
+    public void runExtensionToPosition(int target){
+        extension.setTargetPosition(target);
+        extension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extension.setPower(1.0);
+    }
+
+    public void setInPickupSequence(){
+        inPickupSequence = true;
+    }
+
+    public void clearInPickupSequence(){
+        inPickupSequence = false;
+    }
+
+    public void pickupSequence(){
+        double WIGGLE_HOLD = 0.5;
+        if (!inPickupSequence){
+            setInPickupSequence();
+            timer.reset();
+            runShoulderToPosition(ARM_PICKUP);
+            runExtensionToPosition(EXTENSION_PICKUP);
+            swivelPickup();
+        } else {
+            double time = timer.seconds();
+            if(time>WIGGLE_HOLD){
+                double wiggleCount = Math.floor((time - WIGGLE_HOLD) / WIGGLE_DELAY);
+                if(wiggleCount % 2 == 0){
+                    setSwivel(SWIVEL_PICKUP-WIGGLE_WIGGLE);
+                } else {
+                    setSwivel(SWIVEL_PICKUP+WIGGLE_WIGGLE);
+                }
+            }
+        }
     }
 
 }
