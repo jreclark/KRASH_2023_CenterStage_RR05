@@ -72,11 +72,11 @@ public class Drive extends LinearOpMode {
             telemetry.addData("Arm position", m_robot.arm.getShoulderPosition());
             telemetry.addData("Extension position", m_robot.arm.getExtensionPosition());
             telemetry.addData("Swivel position", m_robot.arm.swivel.getPosition());
-            telemetry.update();
+
 
             if(gamepad1.right_bumper) {fieldRel = true;}
             if(gamepad1.left_bumper) {fieldRel = false;}
-            if(gamepad1.x) {
+            if(gamepad1.left_trigger > 0.5 && gamepad1.right_trigger > 0.5) {
                 m_robot.drive.resetGyro();
             }
 
@@ -91,7 +91,7 @@ public class Drive extends LinearOpMode {
             //D-Pad Definitions
             if(gamepad2.dpad_down){
                 m_robot.arm.readyPickup();
-            } else {
+            } else if(gamepad2.left_trigger < 0.2){
                 m_robot.arm.runShoulder(gamepad2.right_stick_x*1.0);
                 m_robot.arm.runExtension(-gamepad2.left_stick_y*0.5);
             }
@@ -126,11 +126,16 @@ public class Drive extends LinearOpMode {
             if(gamepad2.y){
                 m_robot.arm.swivelHold();
             }
-            if(gamepad2.x){
+
+
+            //Climber controls
+            if(gamepad1.x){
                 m_robot.climber.runClimber(0.5);
-            } else if(gamepad2.b){
+            } else if(gamepad1.b){
                 m_robot.climber.runClimber(-0.5);
             } else m_robot.climber.runClimber(0);
+
+            telemetry.update();
 
         }
     }
