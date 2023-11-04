@@ -27,15 +27,16 @@ public class Arm {
     final double GRIPPER_RELEASE_ONE = 0.05;
     final double GRIPPER_HOLD_ALL = 0.1;
 
-    final double WIGGLE_WIGGLE = 0.02; //was +/-0.07
-    final long WIGGLE_DELAY = 500;
+    final double WIGGLE_WIGGLE = 0.03; //was +/-0.07
+    final double WIGGLE_DELAY = 0.250;
 
     final double PUSHER_RETRACT = 0; //1.0
     final double PUSHER_PUSH1 =0.65;
     final double PUSHER_PUSH2 = 0.55;
 
+    final double SWIVEL_READY = 0.15;
     final double SWIVEL_PICKUP = 0.18;
-    final double SWIVEL_PLACE_FRONT = 0.233;
+    final double SWIVEL_PLACE_FRONT = 0.25;
     final double SWIVEL_HOLD = 0.85;
     final double SWIVEL_BACK_LOW = 0.61;
     final double SWIVEL_BACK_HIGH = 0.71;
@@ -50,11 +51,20 @@ public class Arm {
     final int EXTENSION_MAX_SLOW = 425;
     final int EXTENSION_MAX = 450;
     
-    final int ARM_READY_PICKUP = 350;
+    final int ARM_READY_PICKUP = 400;
     final int EXTENSION_READY_PICKUP = 40;
     
     final int ARM_PICKUP = 0;
-    final int EXTENSION_PICKUP = 75;
+    final int EXTENSION_PICKUP = 60;
+
+    final int ARM_DELIVER_BACK = 4350;
+    final int EXTENSION_DELIVER_BACK = 250;
+
+    final int ARM_DELIVER_FRONT = 1600;
+    final int EXTENSION_DELIVER_FRONT = 400;
+
+    final int ARM_PIXEL_SPIKE = 400;
+    final int EXTENSION_PIXEL_SPIKE = 200;
 
     boolean inPickupSequence = false;
     ElapsedTime timer = new ElapsedTime();
@@ -127,17 +137,31 @@ public class Arm {
     }
 
     public void swivelPickup(){setSwivel(SWIVEL_PICKUP);}
+    public void swivelReady(){setSwivel(SWIVEL_READY);}
     public void swivelHold(){setSwivel(SWIVEL_HOLD);}
-    public void readyDeliverBackHigh(){setSwivel(SWIVEL_BACK_HIGH);}
+
     public void readyDeliverBackLow(){setSwivel(SWIVEL_BACK_LOW);}
-    public void readyDeliverFront(){setSwivel(SWIVEL_PLACE_FRONT);}
+
+    public void readyDeliverFront(){
+        setSwivel(SWIVEL_PLACE_FRONT);
+        runShoulderToPosition(ARM_DELIVER_FRONT);
+        runExtensionToPosition(EXTENSION_DELIVER_FRONT);
+    }
+
+    public void readyDeliverBackHigh(){
+        setSwivel(SWIVEL_BACK_HIGH);
+        runShoulderToPosition(ARM_DELIVER_BACK);
+        runExtensionToPosition(EXTENSION_DELIVER_BACK);
+    }
+
+
 
     public void readyPickup(){
         runShoulderToPosition(ARM_READY_PICKUP);
         runExtensionToPosition(EXTENSION_READY_PICKUP);
         pusherRetract();
         gripperRelease();
-        swivelPickup();
+        swivelReady();
     }
 
     public void drop1(){
@@ -162,9 +186,9 @@ public class Arm {
     public void wiggle(){
         double currentPos = swivel.getPosition();
         setSwivel(currentPos-WIGGLE_WIGGLE);
-        Utils.sleep(WIGGLE_DELAY);
+        Utils.sleep((long)(WIGGLE_DELAY/1000));
         setSwivel(currentPos+WIGGLE_WIGGLE);
-        Utils.sleep(WIGGLE_DELAY);
+        Utils.sleep((long)(WIGGLE_DELAY/1000));
         setSwivel(currentPos);
     }
 
@@ -234,8 +258,12 @@ public class Arm {
         inPickupSequence = false;
     }
 
+    public boolean getInPickupSequencec(){
+        return inPickupSequence;
+    }
+
     public void pickupSequence(){
-        double WIGGLE_HOLD = 0.5;
+        double WIGGLE_HOLD = 0.25;
         if (!inPickupSequence){
             setInPickupSequence();
             timer.reset();
@@ -254,5 +282,12 @@ public class Arm {
             }
         }
     }
+
+    public void pixelSpikeReady() {
+        swivelPickup();
+        runShoulderToPosition(ARM_PIXEL_SPIKE);
+        runExtensionToPosition(EXTENSION_PIXEL_SPIKE);
+    }
+
 
 }

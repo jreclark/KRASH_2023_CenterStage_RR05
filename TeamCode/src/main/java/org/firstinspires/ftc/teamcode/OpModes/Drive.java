@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 @TeleOp(group = "Comp")
 public class Drive extends LinearOpMode {
     public boolean fieldRel = true;
+    public boolean armManual = true;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -81,37 +82,49 @@ public class Drive extends LinearOpMode {
             }
 
             //ARM Controls
-
-//            m_robot.arm.runShoulder(-gamepad2.right_stick_x*1.0);
-//            m_robot.arm.runExtension(-gamepad2.left_stick_y*0.5);
-//            if(Math.abs(gamepad2.right_stick_y)>0.1) {m_robot.arm.runShoulder(-gamepad2.right_stick_y*1.0);}
-//            if(Math.abs(gamepad2.left_stick_y)>0.1) {m_robot.arm.runExtension(-gamepad2.left_stick_y*0.5);}
             if(Math.abs(gamepad2.left_stick_x)>0.1) {m_robot.arm.runSwivel(gamepad2.left_stick_x);}
+            if(armManual) {
+                m_robot.arm.runShoulder(gamepad2.right_stick_x * 1.0);
+                m_robot.arm.runExtension(-gamepad2.left_stick_y * 0.5);
+            }
+
+            if(Math.abs(gamepad2.right_stick_x)>0.1 || Math.abs(gamepad2.left_stick_y) > 0){
+                armManual = true;
+            }
 
             //D-Pad Definitions
             if(gamepad2.dpad_down){
+                armManual = false;
                 m_robot.arm.readyPickup();
-            } else if(gamepad2.left_trigger < 0.2){
-                m_robot.arm.runShoulder(gamepad2.right_stick_x*1.0);
-                m_robot.arm.runExtension(-gamepad2.left_stick_y*0.5);
             }
+
             if(gamepad2.dpad_right){
+                armManual = false;
                 m_robot.arm.readyDeliverFront();
             }
             if(gamepad2.dpad_up){
+                armManual = false;
                 m_robot.arm.readyDeliverBackHigh();
             }
-            if(gamepad2.dpad_left){
-                m_robot.arm.readyDeliverBackLow();
-            }
+//            if(gamepad2.dpad_left){
+//                m_robot.arm.readyDeliverBackLow();
+//            }
 
             //Trigger / Shoulder Controls
             if(gamepad2.right_trigger >= 0.5){
+                armManual = false;
                 m_robot.arm.pickup();
             }
             if(gamepad2.left_trigger >= 0.2){
+                armManual = false;
                 m_robot.arm.pickupSequence();
-            } else {m_robot.arm.clearInPickupSequence();}
+            } else {
+                if (m_robot.arm.getInPickupSequencec()) {
+                    m_robot.arm.swivelPickup();
+                }
+                m_robot.arm.clearInPickupSequence();
+            }
+
             if(gamepad2.right_bumper){
                 m_robot.arm.drop1();
             }
@@ -127,7 +140,6 @@ public class Drive extends LinearOpMode {
                 m_robot.arm.swivelHold();
             }
 
-
             //Climber controls
             if(gamepad1.x){
                 m_robot.climber.runClimber(0.5);
@@ -136,6 +148,7 @@ public class Drive extends LinearOpMode {
             } else m_robot.climber.runClimber(0);
 
             telemetry.update();
+
 
         }
     }
