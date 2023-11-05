@@ -111,7 +111,7 @@ public class BlueWing extends LinearOpMode {
 
         m_robot.arm.drop2();
         sleep(1000);
-        m_robot.arm.readyPickup();
+        m_robot.arm.readyPickup(false);
 
     }
 }
