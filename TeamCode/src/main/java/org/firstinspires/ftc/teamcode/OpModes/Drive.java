@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.DriveTrain.HowellMecanumDrive;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.util.ButtonState;
 
 /**
 
@@ -18,6 +19,14 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class Drive extends LinearOpMode {
     public boolean fieldRel = true;
     public boolean armManual = true;
+
+    final double NORMAL_SPEED = 0.8;
+    final double SLOW_SPEED = 0.4;
+    final double TURBO_SPEED = 1.0;
+    public double speedScale = NORMAL_SPEED;
+    public double finalScale = speedScale;
+
+    private ButtonState dropButton = new ButtonState(gamepad2, ButtonState.Button.right_trigger);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -39,6 +48,26 @@ public class Drive extends LinearOpMode {
         //m_robot.drive.setMotorPowers(-.5,-.5,-.5,-.5); // Set motor power to 50%???
 
         while (opModeIsActive() && !isStopRequested()) {
+            if(gamepad1.dpad_right) {fieldRel = true;}
+            if(gamepad1.dpad_left) {fieldRel = false;}
+            if(gamepad1.b && gamepad1.x) {
+                m_robot.drive.resetGyro();
+            }
+            if(gamepad1.right_bumper) {
+                speedScale = NORMAL_SPEED;
+            } else if (gamepad1.left_bumper) {
+                speedScale = SLOW_SPEED;
+            }
+            if(gamepad1.right_trigger > 0.5){
+                finalScale = TURBO_SPEED;
+            } else {
+                finalScale = speedScale;
+            }
+
+
+
+
+
             // Read pose
             Pose2d poseEstimate = m_robot.drive.getPoseEstimate();
             double poseHeading = m_robot.drive.getExternalHeading();  //Use the gyro instead of odometry
@@ -58,7 +87,7 @@ public class Drive extends LinearOpMode {
                             Math.pow(input.getX(),3),
                             Math.pow(input.getY(),3),
                             Math.pow(-gamepad1.right_stick_x,3)
-                    )
+                    ).times(finalScale)
             );
 
             // Update everything. Odometry. Etc.
@@ -73,13 +102,9 @@ public class Drive extends LinearOpMode {
             telemetry.addData("Arm position", m_robot.arm.getShoulderPosition());
             telemetry.addData("Extension position", m_robot.arm.getExtensionPosition());
             telemetry.addData("Swivel position", m_robot.arm.swivel.getPosition());
+            telemetry.addData("haveTwo", m_robot.arm.haveTwo);
 
 
-            if(gamepad1.right_bumper) {fieldRel = true;}
-            if(gamepad1.left_bumper) {fieldRel = false;}
-            if(gamepad1.left_trigger > 0.5 && gamepad1.right_trigger > 0.5) {
-                m_robot.drive.resetGyro();
-            }
 
             //ARM Controls
             if(Math.abs(gamepad2.left_stick_x)>0.1) {m_robot.arm.runSwivel(gamepad2.left_stick_x);}
@@ -88,14 +113,14 @@ public class Drive extends LinearOpMode {
                 m_robot.arm.runExtension(-gamepad2.left_stick_y * 0.5);
             }
 
-            if(Math.abs(gamepad2.right_stick_x)>0.1 || Math.abs(gamepad2.left_stick_y) > 0){
+            if(Math.abs(gamepad2.right_stick_x)>0.1 || Math.abs(gamepad2.left_stick_y) > 0.1){
                 armManual = true;
             }
 
             //D-Pad Definitions
             if(gamepad2.dpad_down){
                 armManual = false;
-                m_robot.arm.readyPickup();
+                m_robot.arm.readyPickup(false);
             }
 
             if(gamepad2.dpad_right){
@@ -111,39 +136,38 @@ public class Drive extends LinearOpMode {
 //            }
 
             //Trigger / Shoulder Controls
-            if(gamepad2.right_trigger >= 0.5){
-                armManual = false;
-                m_robot.arm.pickup();
-            }
+//            if(gamepad2.right_trigger >= 0.5){
+//                armManual = false;
+//                m_robot.arm.pickup();
+//            }
             if(gamepad2.left_trigger >= 0.2){
                 armManual = false;
                 m_robot.arm.pickupSequence();
             } else {
                 if (m_robot.arm.getInPickupSequencec()) {
-                    m_robot.arm.swivelPickup();
+                    m_robot.arm.pickup();
+                    sleep(200); //Sleep in tele is usually a horrible idea, but this enforces a pause
+                    m_robot.arm.readyPickup(true);
                 }
                 m_robot.arm.clearInPickupSequence();
             }
 
-            if(gamepad2.right_bumper){
-                m_robot.arm.drop1();
-            }
-            if(gamepad2.left_bumper){
-                m_robot.arm.drop2();
+            if(dropButton.newPress()){
+                m_robot.arm.drop();
             }
 
             //Button Controls
-            if(gamepad2.a){
-                m_robot.arm.wiggle();
-            }
+//            if(gamepad2.a){
+//                m_robot.arm.wiggle();
+//            }
             if(gamepad2.y){
                 m_robot.arm.swivelHold();
             }
 
             //Climber controls
-            if(gamepad1.x){
+            if(gamepad1.dpad_up){
                 m_robot.climber.runClimber(0.5);
-            } else if(gamepad1.b){
+            } else if(gamepad1.dpad_down){
                 m_robot.climber.runClimber(-0.5);
             } else m_robot.climber.runClimber(0);
 

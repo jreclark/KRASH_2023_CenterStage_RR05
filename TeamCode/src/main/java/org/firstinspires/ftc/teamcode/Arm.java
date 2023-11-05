@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.firstinspires.ftc.teamcode.util.Utils;
 import org.slf4j.helpers.Util;
 
+import static org.firstinspires.ftc.teamcode.util.Utils.sleep;
+
 public class Arm {
     public Servo gripper, ejector, swivel;
     public DcMotorEx shoulder;
@@ -24,7 +26,7 @@ public class Arm {
     private Telemetry telemetry;
 
     final double GRIPPER_RELEASE = 0;
-    final double GRIPPER_RELEASE_ONE = 0.05;
+    final double GRIPPER_RELEASE_ONE = 0.04;
     final double GRIPPER_HOLD_ALL = 0.1;
 
     final double WIGGLE_WIGGLE = 0.03; //was +/-0.07
@@ -64,11 +66,12 @@ public class Arm {
     final int EXTENSION_DELIVER_FRONT = 400;
 
     final int ARM_PIXEL_SPIKE = 400;
-    final int EXTENSION_PIXEL_SPIKE = 200;
+    final int EXTENSION_PIXEL_SPIKE = 300;
 
     boolean inPickupSequence = false;
     ElapsedTime timer = new ElapsedTime();
-    
+
+    public boolean haveTwo = false;
     
     public enum Arm_Modes {
         PICKUP,
@@ -127,11 +130,9 @@ public class Arm {
     public void pusherRetract(){
         setPusher(PUSHER_RETRACT);
     }
-
     public void pusherPush1(){
         setPusher(PUSHER_PUSH1);
     }
-
     public void pusherPush2(){
         setPusher(PUSHER_PUSH2);
     }
@@ -154,13 +155,14 @@ public class Arm {
         runExtensionToPosition(EXTENSION_DELIVER_BACK);
     }
 
-
-
-    public void readyPickup(){
+    public void readyPickup(boolean gripperEngaged){
         runShoulderToPosition(ARM_READY_PICKUP);
         runExtensionToPosition(EXTENSION_READY_PICKUP);
         pusherRetract();
-        gripperRelease();
+        if(!gripperEngaged){
+            gripperRelease();
+            clearHaveTwo();
+        }
         swivelReady();
     }
 
@@ -174,6 +176,15 @@ public class Arm {
         pusherPush2();
     }
 
+    public void drop(){
+        if(haveTwo){
+            drop1();
+            clearHaveTwo();
+        } else {
+            drop2();
+        }
+    }
+
     public void safePosition(){
         gripperRelease();
         pusherRetract();
@@ -181,14 +192,15 @@ public class Arm {
 
     public void pickup(){
         gripperHoldAll();
+        setHaveTwo();
     }
 
     public void wiggle(){
         double currentPos = swivel.getPosition();
         setSwivel(currentPos-WIGGLE_WIGGLE);
-        Utils.sleep((long)(WIGGLE_DELAY/1000));
+        sleep((long)(WIGGLE_DELAY/1000));
         setSwivel(currentPos+WIGGLE_WIGGLE);
-        Utils.sleep((long)(WIGGLE_DELAY/1000));
+        sleep((long)(WIGGLE_DELAY/1000));
         setSwivel(currentPos);
     }
 
@@ -266,10 +278,12 @@ public class Arm {
         double WIGGLE_HOLD = 0.25;
         if (!inPickupSequence){
             setInPickupSequence();
+            gripperRelease();
             timer.reset();
             runShoulderToPosition(ARM_PICKUP);
             runExtensionToPosition(EXTENSION_PICKUP);
             swivelPickup();
+            clearHaveTwo();
         } else {
             double time = timer.seconds();
             if(time>WIGGLE_HOLD){
@@ -287,6 +301,26 @@ public class Arm {
         swivelPickup();
         runShoulderToPosition(ARM_PIXEL_SPIKE);
         runExtensionToPosition(EXTENSION_PIXEL_SPIKE);
+    }
+
+    public void setHaveTwo(){
+        haveTwo = true;
+    }
+
+    public void clearHaveTwo(){
+        haveTwo = false;
+    }
+
+    public void drop1Flat(){
+        drop1();
+    }
+
+    public void autoInit(){
+        shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        swivelHold();
+        pusherRetract();
+        sleep(500);
+        gripperHoldAll();
     }
 
 

@@ -83,10 +83,10 @@ public class ButtonState {
                 buttonPress = gamepad.right_stick_button;
                 break;
             case right_trigger:
-                buttonPress = (gamepad.right_trigger > 0);
+                buttonPress = (gamepad.right_trigger > 0.1);
                 break;
             case left_trigger:
-                buttonPress = (gamepad.left_trigger > 0);
+                buttonPress = (gamepad.left_trigger > 0.1);
                 break;
         }
 
@@ -109,6 +109,5 @@ public class ButtonState {
             return false;
         }
     }
-
 
 }
