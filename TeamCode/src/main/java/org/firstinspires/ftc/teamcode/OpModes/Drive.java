@@ -26,7 +26,7 @@ public class Drive extends LinearOpMode {
     public double speedScale = NORMAL_SPEED;
     public double finalScale = speedScale;
 
-    private ButtonState dropButton = new ButtonState(gamepad2, ButtonState.Button.right_trigger);
+    private ButtonState dropButton = new ButtonState(gamepad2, ButtonState.Button.right_bumper);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -70,7 +70,7 @@ public class Drive extends LinearOpMode {
 
             // Read pose
             Pose2d poseEstimate = m_robot.drive.getPoseEstimate();
-            double poseHeading = m_robot.drive.getExternalHeading();  //Use the gyro instead of odometry
+            double poseHeading = m_robot.drive.getRawExternalHeading();  //Use the gyro instead of odometry
             if (!fieldRel){ poseHeading = 0;}
 
             // Create a vector from the gamepad x/y inputs
@@ -96,7 +96,7 @@ public class Drive extends LinearOpMode {
             // Print pose to telemetry
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", m_robot.drive.getExternalHeading());
+            telemetry.addData("heading", m_robot.drive.getRawExternalHeading());
             telemetry.addData("Field Rel", fieldRel);
             telemetry.addLine();
             telemetry.addData("Arm position", m_robot.arm.getShoulderPosition());
@@ -131,9 +131,12 @@ public class Drive extends LinearOpMode {
                 armManual = false;
                 m_robot.arm.readyDeliverBackHigh();
             }
-//            if(gamepad2.dpad_left){
-//                m_robot.arm.readyDeliverBackLow();
-//            }
+            if(gamepad2.start){
+                m_robot.arm.zeroShoulder();
+            } else if (m_robot.arm.zeroingArm){
+                m_robot.arm.zeroingArm = false;
+                m_robot.arm.resetShoulderEncoder();
+            }
 
             //Trigger / Shoulder Controls
 //            if(gamepad2.right_trigger >= 0.5){
@@ -145,6 +148,8 @@ public class Drive extends LinearOpMode {
                 m_robot.arm.pickupSequence();
             } else {
                 if (m_robot.arm.getInPickupSequencec()) {
+                    m_robot.arm.swivelPickup();
+                    sleep(200);
                     m_robot.arm.pickup();
                     sleep(200); //Sleep in tele is usually a horrible idea, but this enforces a pause
                     m_robot.arm.readyPickup(true);
@@ -152,8 +157,11 @@ public class Drive extends LinearOpMode {
                 m_robot.arm.clearInPickupSequence();
             }
 
-            if(dropButton.newPress()){
-                m_robot.arm.drop();
+            if(gamepad2.right_bumper){
+                m_robot.arm.drop1();
+                m_robot.arm.clearHaveTwo();
+            } else if (gamepad2.left_bumper && !m_robot.arm.haveTwo){
+                m_robot.arm.drop2();
             }
 
             //Button Controls

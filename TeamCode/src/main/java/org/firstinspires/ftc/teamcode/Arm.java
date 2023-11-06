@@ -23,10 +23,12 @@ public class Arm {
     public Encoder shoulderEncoder;
     public Encoder extensionEncoder;
 
+    public boolean zeroingArm = false;
+
     private Telemetry telemetry;
 
     final double GRIPPER_RELEASE = 0;
-    final double GRIPPER_RELEASE_ONE = 0.04;
+    final double GRIPPER_RELEASE_ONE = 0.07;
     final double GRIPPER_HOLD_ALL = 0.1;
 
     final double WIGGLE_WIGGLE = 0.03; //was +/-0.07
@@ -57,16 +59,16 @@ public class Arm {
     final int EXTENSION_READY_PICKUP = 40;
     
     final int ARM_PICKUP = 0;
-    final int EXTENSION_PICKUP = 60;
+    public final int EXTENSION_PICKUP = 75;
 
     final int ARM_DELIVER_BACK = 4350;
     final int EXTENSION_DELIVER_BACK = 250;
 
-    final int ARM_DELIVER_FRONT = 1600;
+    final int ARM_DELIVER_FRONT = 1100;
     final int EXTENSION_DELIVER_FRONT = 400;
 
-    final int ARM_PIXEL_SPIKE = 400;
-    final int EXTENSION_PIXEL_SPIKE = 300;
+    final int ARM_PIXEL_SPIKE = 450;
+    final int EXTENSION_PIXEL_SPIKE = 350;
 
     boolean inPickupSequence = false;
     ElapsedTime timer = new ElapsedTime();
@@ -217,6 +219,11 @@ public class Arm {
         shoulder.setPower(limitPower(power, ARM_MIN, ARM_MIN_SLOW, ARM_MAX, ARM_MAX_SLOW, shoulderEncoder));
     }
 
+    public void runShoulderUnlimited(double power){
+        shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shoulder.setPower(power);
+    }
+
     public void runExtension(double power){
         extension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         extension.setPower(limitPower(power, EXTENSION_MIN, EXTENSION_MIN_SLOW, EXTENSION_MAX, EXTENSION_MAX_SLOW, extensionEncoder));
@@ -303,6 +310,12 @@ public class Arm {
         runExtensionToPosition(EXTENSION_PIXEL_SPIKE);
     }
 
+    public void pixelHold() {
+        swivelHold();
+        runShoulderToPosition(ARM_READY_PICKUP);
+        runExtensionToPosition(EXTENSION_READY_PICKUP);
+    }
+
     public void setHaveTwo(){
         haveTwo = true;
     }
@@ -322,6 +335,17 @@ public class Arm {
         sleep(500);
         gripperHoldAll();
     }
+
+    public void zeroShoulder(){
+        zeroingArm = true;
+        runShoulderUnlimited(-0.1);
+    }
+
+    public void resetShoulderEncoder(){
+        shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+
 
 
 }

@@ -20,8 +20,9 @@ public class ContourTSEProcessor implements VisionProcessor {
         MIDDLE,
         RIGHT}
 
-    private final double LEFT_LIMIT = 200;
-    private final double RIGHT_LIMIT = 440;
+    //640 pixels wide
+    private final double LEFT_LIMIT = 150;
+    private final double RIGHT_LIMIT = 490;
 
     //Outputs
     private Mat cvResizeOutput = new Mat();
