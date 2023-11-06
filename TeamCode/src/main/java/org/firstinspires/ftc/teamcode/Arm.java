@@ -200,9 +200,9 @@ public class Arm {
     public void wiggle(){
         double currentPos = swivel.getPosition();
         setSwivel(currentPos-WIGGLE_WIGGLE);
-        sleep((long)(WIGGLE_DELAY/1000));
+        sleep((long)(WIGGLE_DELAY*1000));
         setSwivel(currentPos+WIGGLE_WIGGLE);
-        sleep((long)(WIGGLE_DELAY/1000));
+        sleep((long)(WIGGLE_DELAY*1000));
         setSwivel(currentPos);
     }
 
@@ -345,7 +345,17 @@ public class Arm {
         shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    public void backoffShoulder(){
+        int posOffset = 200;
+        int currentPos = shoulderEncoder.getCurrentPosition();
+        int targetPos = currentPos;
+        if(currentPos > 3000){
+            posOffset = -posOffset;
+        }
 
+        targetPos = currentPos + posOffset;
+        runShoulderToPosition(targetPos);
+    }
 
 
 }

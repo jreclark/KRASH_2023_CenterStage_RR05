@@ -17,8 +17,9 @@ import org.firstinspires.ftc.teamcode.util.ButtonState;
  */
 @TeleOp(group = "Comp")
 public class Drive extends LinearOpMode {
-    public boolean fieldRel = true;
+    public boolean fieldRel = false;
     public boolean armManual = true;
+    public boolean backoffButton = false;
 
     final double NORMAL_SPEED = 0.8;
     final double SLOW_SPEED = 0.4;
@@ -48,7 +49,7 @@ public class Drive extends LinearOpMode {
         //m_robot.drive.setMotorPowers(-.5,-.5,-.5,-.5); // Set motor power to 50%???
 
         while (opModeIsActive() && !isStopRequested()) {
-            if(gamepad1.dpad_right) {fieldRel = true;}
+            //if(gamepad1.dpad_right) {fieldRel = true;}
             if(gamepad1.dpad_left) {fieldRel = false;}
             if(gamepad1.b && gamepad1.x) {
                 m_robot.drive.resetGyro();
@@ -165,11 +166,19 @@ public class Drive extends LinearOpMode {
             }
 
             //Button Controls
-//            if(gamepad2.a){
-//                m_robot.arm.wiggle();
-//            }
+            if(gamepad2.a){
+                m_robot.arm.wiggle();
+            }
             if(gamepad2.y){
                 m_robot.arm.swivelHold();
+            }
+            if(gamepad2.x){
+                if(!backoffButton) {
+                    backoffButton = true;
+                    m_robot.arm.backoffShoulder();
+                }
+            } else {
+                backoffButton = false;
             }
 
             //Climber controls
