@@ -20,6 +20,7 @@ public class Drive extends LinearOpMode {
     public boolean fieldRel = false;
     public boolean armManual = true;
     public boolean backoffButton = false;
+    public boolean launchPosButton = false;
 
     final double NORMAL_SPEED = 0.8;
     final double SLOW_SPEED = 0.4;
@@ -33,6 +34,7 @@ public class Drive extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Initialize Robot
         Robot m_robot = new Robot(hardwareMap, telemetry, true);
+        m_robot.droneLauncher.launcherSafe();
 
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
@@ -104,7 +106,9 @@ public class Drive extends LinearOpMode {
             telemetry.addData("Extension position", m_robot.arm.getExtensionPosition());
             telemetry.addData("Swivel position", m_robot.arm.swivel.getPosition());
             telemetry.addData("haveTwo", m_robot.arm.haveTwo);
-
+            telemetry.addLine();
+            telemetry.addData("Launcher position", m_robot.droneLauncher.launchPos.getPosition());
+            telemetry.addData("Trigger position", m_robot.droneLauncher.trigger.getPosition());
 
 
             //ARM Controls
@@ -191,6 +195,27 @@ public class Drive extends LinearOpMode {
             telemetry.update();
 
 
+            //Drone controls
+            if(gamepad2.b && !launchPosButton){
+                m_robot.droneLauncher.toggleLauncher();
+                launchPosButton = true;
+            } else if (!gamepad2.b){
+                launchPosButton = false;
+            }
+
+            if(m_robot.droneLauncher.getLauncherReady() && gamepad2.right_trigger >0.5){
+                m_robot.droneLauncher.launch();
+            } else {
+                m_robot.droneLauncher.setTriggerSafe();
+            }
+
+
+            //Drone Fine Tuning
+            if(gamepad1.x){
+                m_robot.droneLauncher.tunePosition(-1);
+            } else if(gamepad1.b){
+                m_robot.droneLauncher.tunePosition(1);
+            }
         }
     }
 }
