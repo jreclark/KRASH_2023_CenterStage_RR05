@@ -211,11 +211,11 @@ public class Drive extends LinearOpMode {
 
 
             //Drone Fine Tuning
-            if(gamepad1.x){
-                m_robot.droneLauncher.tunePosition(-1);
-            } else if(gamepad1.b){
-                m_robot.droneLauncher.tunePosition(1);
-            }
+//            if(gamepad1.x){
+//                m_robot.droneLauncher.tunePosition(-1);
+//            } else if(gamepad1.b){
+//                m_robot.droneLauncher.tunePosition(1);
+//            }
         }
     }
 }
