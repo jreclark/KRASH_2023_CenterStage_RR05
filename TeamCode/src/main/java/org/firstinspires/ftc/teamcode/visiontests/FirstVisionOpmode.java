@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.visiontests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.processors.FirstVisionProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
-
+@Disabled
 @Autonomous
 public class FirstVisionOpmode extends OpMode {
     private FirstVisionProcessor visionProcessor;

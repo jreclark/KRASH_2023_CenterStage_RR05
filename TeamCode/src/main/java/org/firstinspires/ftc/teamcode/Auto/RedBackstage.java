@@ -4,7 +4,6 @@ import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.MAX_ANG_V
 import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.TRACK_WIDTH;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -17,8 +16,8 @@ import org.firstinspires.ftc.teamcode.processors.ContourTSEProcessor;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 
-@Autonomous(name = "Blue Backstage", group = "Blue")
-public class BlueBackstage extends LinearOpMode {
+@Autonomous(name = "Red Backstage", group = "Red")
+public class RedBackstage extends LinearOpMode {
     private ContourTSEProcessor visionProcessor;
     private VisionPortal visionPortal;
     private ContourTSEProcessor.Selected position = ContourTSEProcessor.Selected.NONE;
@@ -28,12 +27,12 @@ public class BlueBackstage extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
         visionProcessor = new ContourTSEProcessor();
-        visionProcessor.setAlliance(ContourTSEProcessor.Alliance.BLUE);
+        visionProcessor.setAlliance(ContourTSEProcessor.Alliance.RED);
         visionPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), visionProcessor);
         m_robot = new Robot(hardwareMap, telemetry, false);
         m_robot.arm.autoInit();
 
-        Pose2d startPose = new Pose2d(12, 62, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(12, -62, Math.toRadians(-90));
         m_robot.drive.setPoseEstimate(startPose);
 
         //Create optional constraints for slower acceleration and speed
@@ -47,62 +46,62 @@ public class BlueBackstage extends LinearOpMode {
         //Middle Position Paths
         TrajectorySequence dropCent = m_robot.drive.trajectorySequenceBuilder(startPose)
                 //.setVelConstraint(slowSpeed)
-                .setTangent(Math.toRadians(-90))
-                .splineToSplineHeading(new Pose2d(32, 24, Math.toRadians(179)), Math.toRadians(-90))
+                .setTangent(Math.toRadians(90))
+                .splineToSplineHeading(new Pose2d(32, -24, Math.toRadians(-179)), Math.toRadians(90))
                 .build();
 
         TrajectorySequence deliverCent = m_robot.drive.trajectorySequenceBuilder(dropCent.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(47.5, 32, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(47.5, -32, Math.toRadians(0)))
                 .build();
 
         TrajectorySequence parkCent = m_robot.drive.trajectorySequenceBuilder(deliverCent.end())
                 //.setVelConstraint(slowSpeed)
-                .setTangent(Math.toRadians(-90))
-                .lineToLinearHeading(new Pose2d(deliverCent.end().getX()-2, 60, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(60, 62, Math.toRadians(0)))
-                .build();
-
-        //Left Position Paths
-        TrajectorySequence dropLeft = m_robot.drive.trajectorySequenceBuilder(startPose)
-                //.setVelConstraint(slowSpeed)
-                .setTangent(Math.toRadians(-90))
-                .lineToLinearHeading(new Pose2d(40, 32, Math.toRadians(179)))
-                .build();
-
-        TrajectorySequence deliverLeft = m_robot.drive.trajectorySequenceBuilder(dropLeft.end())
-                //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(90))
-                .turn(-Math.toRadians(179.0))
-                .lineToLinearHeading(new Pose2d(48, 44, Math.toRadians(0)))
-                .build();
-
-        TrajectorySequence parkLeft = m_robot.drive.trajectorySequenceBuilder(deliverLeft.end())
-                //.setVelConstraint(slowSpeed)
-                .setTangent(Math.toRadians(-90))
-                .lineToLinearHeading(new Pose2d(deliverCent.end().getX()-2, 60, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(60, 62, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(deliverCent.end().getX()-2, -60, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(60, -62, Math.toRadians(0)))
                 .build();
 
         //Right Position Paths
         TrajectorySequence dropRight = m_robot.drive.trajectorySequenceBuilder(startPose)
                 //.setVelConstraint(slowSpeed)
-                .setTangent(Math.toRadians(-90))
-                .lineToLinearHeading(new Pose2d(18, 32, Math.toRadians(179)))
+                .setTangent(Math.toRadians(90))
+                .lineToLinearHeading(new Pose2d(40, -32, Math.toRadians(-179)))
                 .build();
 
         TrajectorySequence deliverRight = m_robot.drive.trajectorySequenceBuilder(dropRight.end())
                 //.setVelConstraint(slowSpeed)
-                .setTangent(Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(48, 26, Math.toRadians(0)))
+                .setTangent(Math.toRadians(-90))
+                .turn(Math.toRadians(179.0))
+                .lineToLinearHeading(new Pose2d(48, -44, Math.toRadians(0)))
                 .build();
 
         TrajectorySequence parkRight = m_robot.drive.trajectorySequenceBuilder(deliverRight.end())
                 //.setVelConstraint(slowSpeed)
+                .setTangent(Math.toRadians(90))
+                .lineToLinearHeading(new Pose2d(deliverCent.end().getX()-2, -60, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(60, -62, Math.toRadians(0)))
+                .build();
+
+        //Left Position Paths
+        TrajectorySequence dropLeft = m_robot.drive.trajectorySequenceBuilder(startPose)
+                //.setVelConstraint(slowSpeed)
+                .setTangent(Math.toRadians(90))
+                .lineToLinearHeading(new Pose2d(17, -32, Math.toRadians(-179)))
+                .build();
+
+        TrajectorySequence deliverLeft = m_robot.drive.trajectorySequenceBuilder(dropLeft.end())
+                //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-90))
-                .lineToLinearHeading(new Pose2d(deliverCent.end().getX()-2, 60, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(60, 62, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(48, -28.5, Math.toRadians(-1)))
+                .build();
+
+        TrajectorySequence parkLeft = m_robot.drive.trajectorySequenceBuilder(deliverLeft.end())
+                //.setVelConstraint(slowSpeed)
+                .setTangent(Math.toRadians(90))
+                .lineToLinearHeading(new Pose2d(deliverCent.end().getX()-2, -60, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(60, -62, Math.toRadians(0)))
                 .build();
 
 
@@ -120,7 +119,7 @@ public class BlueBackstage extends LinearOpMode {
 //        telemetry.addData("x = ", visionProcessor.getSelectedX());
 //        telemetry.update()
 //        position = visionProcessor.getSelectedX());
-        position = ContourTSEProcessor.Selected.RIGHT;
+        position = ContourTSEProcessor.Selected.LEFT;
 
         switch (position){
             case LEFT:

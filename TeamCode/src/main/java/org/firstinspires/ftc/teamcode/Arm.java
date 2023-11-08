@@ -330,10 +330,12 @@ public class Arm {
 
     public void autoInit(){
         shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         swivelHold();
         pusherRetract();
         sleep(500);
         gripperHoldAll();
+        resetShoulderEncoder();
     }
 
     public void zeroShoulder(){
