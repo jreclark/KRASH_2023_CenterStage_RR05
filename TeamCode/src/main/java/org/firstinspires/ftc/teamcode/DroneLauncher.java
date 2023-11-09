@@ -11,7 +11,7 @@ public class DroneLauncher {
 
     public boolean launcherReady = false;
 
-    double launchPosition = 0.47;
+    double launchPosition = 0.48;
     double launchStow = 0.96;
     double triggerSafe = 0;
     double triggerRelease = 0.3;

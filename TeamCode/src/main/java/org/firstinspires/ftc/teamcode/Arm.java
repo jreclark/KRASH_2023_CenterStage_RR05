@@ -64,8 +64,8 @@ public class Arm {
     final int ARM_DELIVER_BACK = 4350;
     final int EXTENSION_DELIVER_BACK = 250;
 
-    final int ARM_DELIVER_FRONT = 1100;
-    final int EXTENSION_DELIVER_FRONT = 400;
+    final int ARM_DELIVER_FRONT = 1000; // 1100
+    final int EXTENSION_DELIVER_FRONT = 390; //400
 
     final int ARM_PIXEL_SPIKE = 450;
     final int EXTENSION_PIXEL_SPIKE = 350;

@@ -125,10 +125,10 @@ public class BlueWing extends LinearOpMode {
             return;
         }
 
-//        telemetry.addData("x = ", visionProcessor.getSelectedX());
-//        telemetry.update()
-//        position = visionProcessor.getSelectedX());
-        position = ContourTSEProcessor.Selected.LEFT;
+        telemetry.addData("x = ", visionProcessor.getSelectedX());
+        telemetry.update();
+        position = visionProcessor.getLocation();
+//        position = ContourTSEProcessor.Selected.LEFT;
 
         switch (position){
             case LEFT:
