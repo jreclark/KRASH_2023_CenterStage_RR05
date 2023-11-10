@@ -128,7 +128,7 @@ public class RedWing extends LinearOpMode {
         telemetry.addData("x = ", visionProcessor.getSelectedX());
         telemetry.update();
         position = visionProcessor.getLocation();
-//        position = ContourTSEProcessor.Selected.RIGHT;
+//        position = ContourTSEProcessor.Selected.LEFT;
 
         switch (position){
             case LEFT:
