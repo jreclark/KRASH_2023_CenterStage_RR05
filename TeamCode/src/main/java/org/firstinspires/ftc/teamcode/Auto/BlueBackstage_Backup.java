@@ -4,31 +4,35 @@ import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.MAX_ANG_V
 import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.TRACK_WIDTH;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.processors.ContourTSEProcessor;
+import org.firstinspires.ftc.teamcode.processors.FirstVisionProcessor;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 
-@Autonomous(name = "Blue Backstage", group = "Blue")
-public class BlueBackstage extends LinearOpMode {
-    private ContourTSEProcessor visionProcessor;
+@Disabled
+@Autonomous(name = "Blue Backstage2", group = "Blue")
+public class BlueBackstage_Backup extends LinearOpMode {
+    //    private ContourTSEProcessor visionProcessor;
+    private FirstVisionProcessor visionProcessor;
     private VisionPortal visionPortal;
-    private ContourTSEProcessor.Selected position = ContourTSEProcessor.Selected.NONE;
+    private FirstVisionProcessor.Selected position = FirstVisionProcessor.Selected.NONE;
     private Robot m_robot;
     private ElapsedTime timer = new ElapsedTime();
 
 
     public void runOpMode() throws InterruptedException {
-        visionProcessor = new ContourTSEProcessor();
-        visionProcessor.setAlliance(ContourTSEProcessor.Alliance.BLUE);
+        //        visionProcessor = new ContourTSEProcessor();
+        visionProcessor = new FirstVisionProcessor();
+//        visionProcessor.setAlliance(ContourTSEProcessor.Alliance.RED);
         visionPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), visionProcessor);
         m_robot = new Robot(hardwareMap, telemetry, false);
         m_robot.arm.autoInit();
@@ -107,7 +111,7 @@ public class BlueBackstage extends LinearOpMode {
 
 
         while ((!isStarted() && !isStopRequested())) {
-            telemetry.addData("x = ", visionProcessor.getSelectedX());
+            telemetry.addData("x = ", visionProcessor.getLocation());
             telemetry.addData("Selection = ", visionProcessor.getLocation().name());
             telemetry.update();
         }

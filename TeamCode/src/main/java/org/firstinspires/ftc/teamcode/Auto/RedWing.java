@@ -14,21 +14,24 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.processors.ContourTSEProcessor;
+import org.firstinspires.ftc.teamcode.processors.FirstVisionProcessor;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Autonomous(name = "Red Wing", group = "Red")
 public class RedWing extends LinearOpMode {
-    private ContourTSEProcessor visionProcessor;
+    //    private ContourTSEProcessor visionProcessor;
+    private FirstVisionProcessor visionProcessor;
     private VisionPortal visionPortal;
-    private ContourTSEProcessor.Selected position = ContourTSEProcessor.Selected.NONE;
+    private FirstVisionProcessor.Selected position = FirstVisionProcessor.Selected.NONE;
     private Robot m_robot;
     private ElapsedTime timer = new ElapsedTime();
 
 
     public void runOpMode() throws InterruptedException {
-        visionProcessor = new ContourTSEProcessor();
-        visionProcessor.setAlliance(ContourTSEProcessor.Alliance.RED);
+        //        visionProcessor = new ContourTSEProcessor();
+        visionProcessor = new FirstVisionProcessor();
+//        visionProcessor.setAlliance(ContourTSEProcessor.Alliance.RED);
         visionPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), visionProcessor);
         m_robot = new Robot(hardwareMap, telemetry, false);
         m_robot.arm.autoInit();
@@ -103,7 +106,7 @@ public class RedWing extends LinearOpMode {
                 .setTangent(Math.toRadians(90))
                 .lineToLinearHeading(new Pose2d(dropRight.end().getX(), -12, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(36, -12, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(48, -43, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(48, -45, Math.toRadians(0)))
                 .build();
 
         TrajectorySequence parkRight = m_robot.drive.trajectorySequenceBuilder(deliverRight.end())
@@ -115,7 +118,7 @@ public class RedWing extends LinearOpMode {
 
 
         while ((!isStarted() && !isStopRequested())) {
-            telemetry.addData("x = ", visionProcessor.getSelectedX());
+            telemetry.addData("x = ", visionProcessor.getLocation());
             telemetry.addData("Selection = ", visionProcessor.getLocation().name());
             telemetry.update();
         }
@@ -125,7 +128,7 @@ public class RedWing extends LinearOpMode {
             return;
         }
 
-        telemetry.addData("x = ", visionProcessor.getSelectedX());
+        telemetry.addData("x = ", visionProcessor.getLocation());
         telemetry.update();
         position = visionProcessor.getLocation();
 //        position = ContourTSEProcessor.Selected.LEFT;
@@ -162,7 +165,7 @@ public class RedWing extends LinearOpMode {
         sleep(750);
         m_robot.arm.gripperHoldAll();
         m_robot.arm.pixelHold();
-        sleep(500);
+        sleep(11000);
 
         //Deliver to backdrop
         timer.reset();

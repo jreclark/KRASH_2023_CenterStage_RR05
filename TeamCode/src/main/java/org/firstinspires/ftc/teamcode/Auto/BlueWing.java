@@ -162,7 +162,7 @@ public class BlueWing extends LinearOpMode {
         sleep(750);
         m_robot.arm.gripperHoldAll();
         m_robot.arm.pixelHold();
-        sleep(500);
+        sleep(11000);
 
         //Deliver to backdrop
         timer.reset();

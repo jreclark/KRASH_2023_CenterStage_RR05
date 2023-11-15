@@ -65,8 +65,8 @@ public class ContourTSEProcessor implements VisionProcessor {
         // Step HSV_Threshold0:
         Mat hsvThresholdInput = blurOutput;
         final double[] HSVTHRESHOLDHUEBLUE = {95, 120};
-        final double[] HSVTHRESHOLDHUERED = {150, 180};
-        double[] hsvThresholdSaturation = {90, 255.0};
+        final double[] HSVTHRESHOLDHUERED = {150, 280};
+        double[] hsvThresholdSaturation = {90, 255.0}; //{90, 255.0};
         double[] hsvThresholdValue = {0.0, 255.0};
         double[] hsvThresholdHue = (alliance == Alliance.BLUE) ? HSVTHRESHOLDHUEBLUE:HSVTHRESHOLDHUERED;
 
