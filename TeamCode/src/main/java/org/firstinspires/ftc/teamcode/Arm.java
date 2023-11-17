@@ -55,7 +55,7 @@ public class Arm {
     final int EXTENSION_MAX_SLOW = 425;
     final int EXTENSION_MAX = 450;
     
-    final int ARM_READY_PICKUP = 400;
+    final int ARM_READY_PICKUP = 500;
     final int EXTENSION_READY_PICKUP = 40;
     
     final int ARM_PICKUP = 0;

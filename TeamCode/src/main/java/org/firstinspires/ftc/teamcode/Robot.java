@@ -19,6 +19,7 @@ public class Robot {
     public Arm arm;
     public DroneLauncher droneLauncher;
     public Climber climber;
+    public DistanceSensor distanceSensors;
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, boolean isTele) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -27,5 +28,6 @@ public class Robot {
         arm = new Arm(hardwareMap, telemetry);
         droneLauncher = new DroneLauncher(hardwareMap, telemetry);
         climber = new Climber(hardwareMap, telemetry);
+        distanceSensors = new DistanceSensor(hardwareMap);
     }
 }

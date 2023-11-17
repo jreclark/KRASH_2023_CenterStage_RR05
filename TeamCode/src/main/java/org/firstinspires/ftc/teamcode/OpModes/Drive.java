@@ -71,7 +71,7 @@ public class Drive extends LinearOpMode {
 
 
 
-
+            m_robot.distanceSensors.updatePosition();
             // Read pose
             Pose2d poseEstimate = m_robot.drive.getPoseEstimate();
             double poseHeading = m_robot.drive.getRawExternalHeading();  //Use the gyro instead of odometry
@@ -110,6 +110,9 @@ public class Drive extends LinearOpMode {
             telemetry.addLine();
             telemetry.addData("Launcher position", m_robot.droneLauncher.launchPos.getPosition());
             telemetry.addData("Trigger position", m_robot.droneLauncher.trigger.getPosition());
+            telemetry.addLine();
+            telemetry.addData("Left Distance", m_robot.distanceSensors.getLeft());
+            telemetry.addData("Right Distance", m_robot.distanceSensors.getRight());
 
 
             //ARM Controls
