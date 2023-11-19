@@ -191,7 +191,7 @@ public class Drive extends LinearOpMode {
 
             //Climber controls
             if(gamepad1.dpad_up){
-                m_robot.climber.runClimber(0.5);
+                m_robot.climber.runClimber(0.8);
             } else if(gamepad1.dpad_down){
                 m_robot.climber.runClimber(-0.5);
             } else m_robot.climber.runClimber(0);
