@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.DriveTrain;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
@@ -15,15 +16,25 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -50,6 +61,7 @@ import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.encoderTi
 import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.util.Utils.sleep;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
@@ -57,8 +69,14 @@ import static org.firstinspires.ftc.teamcode.DriveTrain.DriveConstants.kV;
 @Config
 public class HowellMecanumDrive extends MecanumDrive {
     private Telemetry telemetry;
+    ElapsedTime timer = new ElapsedTime();
 
     //BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+    private static Boolean useNavx = false;
+    public NavxMicroNavigationSensor navX = null;
+    public IntegratingGyroscope gyro = null;
+    public double navXOffset = 0;
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 1);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
@@ -101,33 +119,52 @@ public class HowellMecanumDrive extends MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        // TODO: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(IMU.class, "imu");
-        //BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        //parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        //imu.initialize(parameters);
+        if (useNavx) {
+            navX = hardwareMap.get(NavxMicroNavigationSensor.class, "navx");
+            gyro = (IntegratingGyroscope) navX;
+            // If you're only interested int the IntegratingGyroscope interface, the following will suffice.
+            // gyro = hardwareMap.get(IntegratingGyroscope.class, "navx");
 
-        // TODO: If the hub containing the IMU you are using is mounted so that the "REV" logo does
-        // not face up, remap the IMU axes so that the z-axis points upward (normal to the floor.)
-        //
-        //             | +Z axis
-        //             |
-        //             |
-        //             |
-        //      _______|_____________     +Y axis
-        //     /       |_____________/|__________
-        //    /   REV / EXPANSION   //
-        //   /       / HUB         //
-        //  /_______/_____________//
-        // |_______/_____________|/
-        //        /
-        //       / +X axis
-        //
-        // This diagram is derived from the axes in section 3.4 https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bno055-ds000.pdf
-        // and the placement of the dot/orientation from https://docs.revrobotics.com/rev-control-system/control-system-overview/dimensions#imu-location
-        //
-        // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
-        //BNO055IMUUtil.remapZAxis(imu, AxisDirection.POS_Y);
+            // The gyro automatically starts calibrating. This takes a few seconds.
+            telemetry.log().add("Gyro Calibrating. Do Not Move!");
+
+            // Wait until the gyro calibration is complete
+            timer.reset();
+            while (navX.isCalibrating()) {
+                telemetry.addData("calibrating", "%s", Math.round(timer.seconds()) % 2 == 0 ? "|.." : "..|");
+                telemetry.update();
+                sleep(50);
+            }
+            navXOffset = 0;
+        } else {
+            // TODO: adjust the names of the following hardware devices to match your configuration
+            imu = hardwareMap.get(IMU.class, "imu");
+            //BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            //parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+            //imu.initialize(parameters);
+
+            // TODO: If the hub containing the IMU you are using is mounted so that the "REV" logo does
+            // not face up, remap the IMU axes so that the z-axis points upward (normal to the floor.)
+            //
+            //             | +Z axis
+            //             |
+            //             |
+            //             |
+            //      _______|_____________     +Y axis
+            //     /       |_____________/|__________
+            //    /   REV / EXPANSION   //
+            //   /       / HUB         //
+            //  /_______/_____________//
+            // |_______/_____________|/
+            //        /
+            //       / +X axis
+            //
+            // This diagram is derived from the axes in section 3.4 https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bno055-ds000.pdf
+            // and the placement of the dot/orientation from https://docs.revrobotics.com/rev-control-system/control-system-overview/dimensions#imu-location
+            //
+            // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
+            //BNO055IMUUtil.remapZAxis(imu, AxisDirection.POS_Y);
+        }
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
@@ -312,12 +349,22 @@ public class HowellMecanumDrive extends MecanumDrive {
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        if(useNavx){
+            Orientation angles = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
+            return angles.firstAngle - navXOffset;
+        } else {
+            return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        }
     }
 
     @Override
     public Double getExternalHeadingVelocity() {
-        return (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
+        if(useNavx){
+            AngularVelocity rates = gyro.getAngularVelocity(AngleUnit.RADIANS);
+            return (double) rates.zRotationRate;
+        } else {
+            return (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
+        }
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
@@ -336,11 +383,11 @@ public class HowellMecanumDrive extends MecanumDrive {
     //***************  Team Specific Code Added Below Here.  Need to Copy/Paste if Updating RR  ****************
     //**********************************************************************************************************
 
-    public void teleDrive(double drivePwr, double turnPwr, double strafePwr, double driveScaleFactor){
-        double leftFrontPower    = drivePwr + turnPwr + strafePwr;
-        double leftRearPower   = drivePwr + turnPwr - strafePwr;
-        double rightFrontPower    = drivePwr - turnPwr - strafePwr;
-        double rightRearPower   = drivePwr - turnPwr + strafePwr;
+    public void teleDrive(double drivePwr, double turnPwr, double strafePwr, double driveScaleFactor) {
+        double leftFrontPower = drivePwr + turnPwr + strafePwr;
+        double leftRearPower = drivePwr + turnPwr - strafePwr;
+        double rightFrontPower = drivePwr - turnPwr - strafePwr;
+        double rightRearPower = drivePwr - turnPwr + strafePwr;
 
         double scaleFactor = driveScaleFactor * Utils.scalePower(leftFrontPower, leftRearPower, rightFrontPower, rightRearPower);
 
@@ -355,7 +402,13 @@ public class HowellMecanumDrive extends MecanumDrive {
     }
 
     public void resetGyro() {
-        imu.resetYaw();
+        if(useNavx){
+            navXOffset = getRawExternalHeading();
+        } else {
+            imu.resetYaw();
+        }
     }
+
+
 
 }

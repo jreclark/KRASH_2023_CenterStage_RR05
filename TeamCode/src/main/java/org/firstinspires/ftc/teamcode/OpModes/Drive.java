@@ -36,6 +36,7 @@ public class Drive extends LinearOpMode {
         // Initialize Robot
         Robot m_robot = new Robot(hardwareMap, telemetry, true);
         m_robot.droneLauncher.launcherSafe();
+        double rotation;
 
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
@@ -86,11 +87,19 @@ public class Drive extends LinearOpMode {
 
             // Pass in the rotated input + right stick value for rotation
             // Rotation is not part of the rotated input thus must be passed in separately
+            rotation = Math.pow(-gamepad1.right_stick_x,3);
+
+            if(gamepad1.right_stick_button){
+                rotation = m_robot.distanceSensors.alignmentController() / finalScale;
+            } else {
+                m_robot.distanceSensors.pidController.reset();
+            }
+
             m_robot.drive.setWeightedDrivePower(
                     new Pose2d(
                             Math.pow(input.getX(),3),
                             Math.pow(input.getY(),3),
-                            Math.pow(-gamepad1.right_stick_x,3)
+                            rotation
                     ).times(finalScale)
             );
 
@@ -113,7 +122,8 @@ public class Drive extends LinearOpMode {
             telemetry.addLine();
             telemetry.addData("Left Distance", m_robot.distanceSensors.getLeft());
             telemetry.addData("Right Distance", m_robot.distanceSensors.getRight());
-
+            telemetry.addData("Wall Angle", m_robot.distanceSensors.getRobotAngle());
+            telemetry.addData("Alignment Power", m_robot.distanceSensors.alignmentController());
 
             //ARM Controls
             if(Math.abs(gamepad2.left_stick_x)>0.1) {m_robot.arm.runSwivel(gamepad2.left_stick_x);}
