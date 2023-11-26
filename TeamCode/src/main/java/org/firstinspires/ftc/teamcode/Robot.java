@@ -19,15 +19,15 @@ public class Robot {
     public Arm arm;
     public DroneLauncher droneLauncher;
     public Climber climber;
-    public DistanceSensor distanceSensors;
+    //public DistanceSensor distanceSensors;
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, boolean isTele) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
 
-        drive = new HowellMecanumDrive(hardwareMap, telemetry);
+        drive = new HowellMecanumDrive(hardwareMap, telemetry, isTele);
         arm = new Arm(hardwareMap, telemetry);
         droneLauncher = new DroneLauncher(hardwareMap, telemetry);
         climber = new Climber(hardwareMap, telemetry);
-        distanceSensors = new DistanceSensor(hardwareMap);
+        //distanceSensors = new DistanceSensor(hardwareMap);
     }
 }

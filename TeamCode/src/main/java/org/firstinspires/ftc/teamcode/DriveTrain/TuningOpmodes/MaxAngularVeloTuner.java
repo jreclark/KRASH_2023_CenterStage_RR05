@@ -32,7 +32,7 @@ public class MaxAngularVeloTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        HowellMecanumDrive drive = new HowellMecanumDrive(hardwareMap, telemetry);
+        HowellMecanumDrive drive = new HowellMecanumDrive(hardwareMap, telemetry, false);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

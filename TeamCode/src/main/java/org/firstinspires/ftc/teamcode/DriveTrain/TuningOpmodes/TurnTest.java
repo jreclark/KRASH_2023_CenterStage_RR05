@@ -18,7 +18,7 @@ public class TurnTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        HowellMecanumDrive drive = new HowellMecanumDrive(hardwareMap, telemetry);
+        HowellMecanumDrive drive = new HowellMecanumDrive(hardwareMap, telemetry, false);
 
         waitForStart();
 

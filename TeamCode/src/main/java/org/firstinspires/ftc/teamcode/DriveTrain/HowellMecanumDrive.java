@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
@@ -73,7 +74,7 @@ public class HowellMecanumDrive extends MecanumDrive {
 
     //BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-    private static Boolean useNavx = false;
+    private static Boolean useNavx = true;
     public NavxMicroNavigationSensor navX = null;
     public IntegratingGyroscope gyro = null;
     public double navXOffset = 0;
@@ -102,7 +103,7 @@ public class HowellMecanumDrive extends MecanumDrive {
     private IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public HowellMecanumDrive(HardwareMap hardwareMap, Telemetry telemetry) {
+    public HowellMecanumDrive(HardwareMap hardwareMap, Telemetry telemetry, boolean isTele) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         this.telemetry = telemetry;
 
@@ -130,11 +131,15 @@ public class HowellMecanumDrive extends MecanumDrive {
 
             // Wait until the gyro calibration is complete
             timer.reset();
-            while (navX.isCalibrating()) {
-                telemetry.addData("calibrating", "%s", Math.round(timer.seconds()) % 2 == 0 ? "|.." : "..|");
-                telemetry.update();
-                sleep(50);
+            if (!isTele) {
+                while (navX.isCalibrating()) {
+                    telemetry.addData("calibrating", "%s", Math.round(timer.seconds()) % 2 == 0 ? "|.." : "..|");
+                    telemetry.update();
+                    sleep(50);
+                }
             }
+            telemetry.clearAll();
+            telemetry.update();
             navXOffset = 0;
         } else {
             // TODO: adjust the names of the following hardware devices to match your configuration
@@ -351,7 +356,7 @@ public class HowellMecanumDrive extends MecanumDrive {
     public double getRawExternalHeading() {
         if(useNavx){
             Orientation angles = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
-            return angles.firstAngle - navXOffset;
+            return angles.firstAngle;
         } else {
             return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         }
@@ -406,7 +411,16 @@ public class HowellMecanumDrive extends MecanumDrive {
             navXOffset = getRawExternalHeading();
         } else {
             imu.resetYaw();
+            navXOffset = 0;
         }
+    }
+
+    public double getNavXOffset(){
+        return navXOffset;
+    }
+
+    public void setNavXOffset(double newOffset){
+        navXOffset = newOffset;
     }
 
 

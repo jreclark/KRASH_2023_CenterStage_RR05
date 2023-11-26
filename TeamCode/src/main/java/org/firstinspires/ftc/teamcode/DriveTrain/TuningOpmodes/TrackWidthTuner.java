@@ -35,7 +35,7 @@ public class TrackWidthTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        HowellMecanumDrive drive = new HowellMecanumDrive(hardwareMap, telemetry);
+        HowellMecanumDrive drive = new HowellMecanumDrive(hardwareMap, telemetry, false);
         // TODO: if you haven't already, set the localizer to something that doesn't depend on
         // drive encoders for computing the heading
 

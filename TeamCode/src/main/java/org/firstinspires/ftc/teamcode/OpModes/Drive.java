@@ -53,10 +53,11 @@ public class Drive extends LinearOpMode {
         //m_robot.drive.setMotorPowers(-.5,-.5,-.5,-.5); // Set motor power to 50%???
 
         while (opModeIsActive() && !isStopRequested()) {
-            //if(gamepad1.dpad_right) {fieldRel = true;}
+            if(gamepad1.dpad_right) {fieldRel = true;}
             if(gamepad1.dpad_left) {fieldRel = false;}
             if(gamepad1.b && gamepad1.x) {
                 m_robot.drive.resetGyro();
+                fieldRel = true;
             }
             if(gamepad1.right_bumper) {
                 speedScale = NORMAL_SPEED;
@@ -72,7 +73,7 @@ public class Drive extends LinearOpMode {
 
 
 
-            m_robot.distanceSensors.updatePosition();
+            //m_robot.distanceSensors.updatePosition();
             // Read pose
             Pose2d poseEstimate = m_robot.drive.getPoseEstimate();
             double poseHeading = m_robot.drive.getRawExternalHeading();  //Use the gyro instead of odometry
@@ -83,17 +84,17 @@ public class Drive extends LinearOpMode {
             Vector2d input = new Vector2d(
                     -gamepad1.left_stick_y,
                     -gamepad1.left_stick_x
-            ).rotated(-poseHeading);
+            ).rotated(-poseHeading).rotated(m_robot.drive.getNavXOffset());
 
             // Pass in the rotated input + right stick value for rotation
             // Rotation is not part of the rotated input thus must be passed in separately
             rotation = Math.pow(-gamepad1.right_stick_x,3);
 
-            if(gamepad1.right_stick_button){
-                rotation = m_robot.distanceSensors.alignmentController() / finalScale;
-            } else {
-                m_robot.distanceSensors.pidController.reset();
-            }
+//            if(gamepad1.right_stick_button){
+//                rotation = m_robot.distanceSensors.alignmentController() / finalScale;
+//            } else {
+//                m_robot.distanceSensors.pidController.reset();
+//            }
 
             m_robot.drive.setWeightedDrivePower(
                     new Pose2d(
@@ -120,10 +121,10 @@ public class Drive extends LinearOpMode {
             telemetry.addData("Launcher position", m_robot.droneLauncher.launchPos.getPosition());
             telemetry.addData("Trigger position", m_robot.droneLauncher.trigger.getPosition());
             telemetry.addLine();
-            telemetry.addData("Left Distance", m_robot.distanceSensors.getLeft());
-            telemetry.addData("Right Distance", m_robot.distanceSensors.getRight());
-            telemetry.addData("Wall Angle", m_robot.distanceSensors.getRobotAngle());
-            telemetry.addData("Alignment Power", m_robot.distanceSensors.alignmentController());
+            //telemetry.addData("Left Distance", m_robot.distanceSensors.getLeft());
+            //telemetry.addData("Right Distance", m_robot.distanceSensors.getRight());
+            //telemetry.addData("Wall Angle", m_robot.distanceSensors.getRobotAngle());
+            //telemetry.addData("Alignment Power", m_robot.distanceSensors.alignmentController());
 
             //ARM Controls
             if(Math.abs(gamepad2.left_stick_x)>0.1) {m_robot.arm.runSwivel(gamepad2.left_stick_x);}
