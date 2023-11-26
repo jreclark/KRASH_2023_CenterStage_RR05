@@ -131,12 +131,11 @@ public class HowellMecanumDrive extends MecanumDrive {
 
             // Wait until the gyro calibration is complete
             timer.reset();
-            if (!isTele) {
                 while (navX.isCalibrating()) {
                     telemetry.addData("calibrating", "%s", Math.round(timer.seconds()) % 2 == 0 ? "|.." : "..|");
                     telemetry.update();
                     sleep(50);
-                }
+
             }
             telemetry.clearAll();
             telemetry.update();
