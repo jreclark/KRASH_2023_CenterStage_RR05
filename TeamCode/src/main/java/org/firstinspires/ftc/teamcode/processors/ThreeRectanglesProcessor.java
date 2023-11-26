@@ -12,9 +12,9 @@ import org.opencv.core.Rect;
 import java.util.concurrent.CancellationException;
 
 public class ThreeRectanglesProcessor implements VisionProcessor{
-    public Rect rectLeft = new Rect(0, 100, 150, 300);
-    public Rect rectMiddle = new Rect(150, 100, 490-150, 300);
-    public Rect rectRight = new Rect(490, 100, 640-490, 200);
+    public Rect rectLeft = new Rect(0, 0, 150, 300);
+    public Rect rectMiddle = new Rect(150, 0, 490-150, 300);
+    public Rect rectRight = new Rect(490, 0, 640-490, 200);
     Selected selection = Selected.NONE;
 
     @Override
