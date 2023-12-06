@@ -60,7 +60,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         TrajectorySequence parkCent = m_robot.drive.trajectorySequenceBuilder(deliverCent.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-90))
-                .lineToLinearHeading(new Pose2d(deliverCent.end().getX()-2, 60, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(deliverCent.end().getX() - 2, 60, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(60, 62, Math.toRadians(0)))
                 .build();
 
@@ -82,7 +82,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         TrajectorySequence parkLeft = m_robot.drive.trajectorySequenceBuilder(deliverLeft.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-90))
-                .lineToLinearHeading(new Pose2d(deliverCent.end().getX()-2, 60, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(deliverCent.end().getX() - 2, 60, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(62, 62, Math.toRadians(0)))
                 .build();
 
@@ -102,7 +102,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         TrajectorySequence parkRight = m_robot.drive.trajectorySequenceBuilder(deliverRight.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-90))
-                .lineToLinearHeading(new Pose2d(deliverCent.end().getX()-2, 60, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(deliverCent.end().getX() - 2, 60, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(60, 62, Math.toRadians(0)))
                 .build();
 
@@ -113,18 +113,18 @@ public class BlueBackstage_Cycle extends LinearOpMode {
 
         TrajectorySequence cycleCent = m_robot.drive.trajectorySequenceBuilder(deliverCent.end())
                 .setTangent(Math.toRadians(180))
-                .splineToSplineHeading(cyclePoint,cyclePoint.getHeading())
+                .splineToSplineHeading(cyclePoint, cyclePoint.getHeading())
                 .splineToSplineHeading(farCyclePoint, farCyclePoint.getHeading())
-                .splineToConstantHeading(new Vector2d(stopPoint.getX(),stopPoint.getY()), stopPoint.getHeading())
-                .splineToConstantHeading(new Vector2d(pickupPoint.getX(),pickupPoint.getY()), pickupPoint.getHeading())
+                .splineToConstantHeading(new Vector2d(stopPoint.getX(), stopPoint.getY()), stopPoint.getHeading())
+                .splineToConstantHeading(new Vector2d(pickupPoint.getX(), pickupPoint.getY()), pickupPoint.getHeading())
                 .build();
 
         TrajectorySequence cycleBack = m_robot.drive.trajectorySequenceBuilder(pickupPoint)
                 .setTangent(Math.toRadians(0))
                 .splineToLinearHeading(stopPoint, 0)
-                .splineToLinearHeading(farCyclePoint,0)
-                .splineToSplineHeading(cyclePoint,0)
-                .splineToSplineHeading(leftDeliverPose,0)
+                .splineToLinearHeading(farCyclePoint, 0)
+                .splineToSplineHeading(cyclePoint, 0)
+                .splineToSplineHeading(leftDeliverPose, 0)
                 .build();
 
         while ((!isStarted() && !isStopRequested())) {
@@ -143,7 +143,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         position = visionProcessor.getLocation();
 //        position = ContourTSEProcessor.Selected.LEFT;
 
-        switch (position){
+        switch (position) {
             case LEFT:
                 drop = dropLeft;
                 deliver = deliverLeft;
@@ -163,9 +163,9 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         //Drop the first pixel
         timer.reset();
         m_robot.drive.followTrajectorySequenceAsync(drop);
-        while(m_robot.drive.isBusy()){
+        while (m_robot.drive.isBusy()) {
             m_robot.drive.update();
-            if(timer.seconds()>0.5){
+            if (timer.seconds() > 0.5) {
                 m_robot.arm.swivelPickup();
             }
         }
@@ -180,9 +180,9 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         //Deliver to backdrop
         timer.reset();
         m_robot.drive.followTrajectorySequenceAsync(deliver);
-        while(m_robot.drive.isBusy()){
+        while (m_robot.drive.isBusy()) {
             m_robot.drive.update();
-            if(timer.seconds()>0){
+            if (timer.seconds() > 0) {
                 m_robot.arm.readyDeliverFront();
             }
         }
@@ -194,19 +194,38 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         m_robot.arm.readyPickup(false);
         //sleep(1000);
 
-        m_robot.drive.followTrajectorySequence(cycleCent);
+        if (position == ContourTSEProcessor.Selected.RIGHT) {
+            m_robot.drive.followTrajectorySequence(park);
+        } else {
+            m_robot.drive.followTrajectorySequence(cycleCent);
 
-        timer.reset();
-        while (timer.seconds() <= 1.5) {
-            m_robot.arm.pickupSequence();
+            timer.reset();
+            while (timer.seconds() <= 1.5) {
+                m_robot.arm.pickupSequence();
+            }
+            m_robot.arm.swivelPickup();
+            sleep(200);
+            m_robot.arm.pickup();
+            sleep(200);
+            m_robot.arm.readyPickup(true);
+
+            //Deliver to backdrop again
+            timer.reset();
+            m_robot.drive.followTrajectorySequence(cycleBack);
+            while (m_robot.drive.isBusy()) {
+                m_robot.drive.update();
+                if (timer.seconds() > 0) {
+                    m_robot.arm.readyDeliverFront();
+                }
+            }
+
+            // Fabrizio added code...still needs to be tested!
+            m_robot.arm.drop2();
+            sleep(1000);
+            m_robot.arm.runExtensionToPosition(m_robot.arm.EXTENSION_PICKUP);
+            sleep(1000);
+            m_robot.arm.readyPickup(false);
+            //sleep(1000);
         }
-        m_robot.arm.swivelPickup();
-        sleep(200);
-        m_robot.arm.pickup();
-        sleep(200);
-        m_robot.arm.readyPickup(true);
-
-        m_robot.drive.followTrajectorySequence(cycleBack);
-        m_robot.arm.readyDeliverFront();
     }
 }

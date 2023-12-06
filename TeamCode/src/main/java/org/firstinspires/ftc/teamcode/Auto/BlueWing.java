@@ -57,7 +57,7 @@ public class BlueWing extends LinearOpMode {
                 .turn(Math.toRadians(-45))
                 .lineToLinearHeading(new Pose2d(dropCent.end().getX(), 12, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(36, 12, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(47, 35, Math.toRadians(-5)))
+                .lineToLinearHeading(new Pose2d(47, 36, Math.toRadians(-5)))
                 .build();
 
         TrajectorySequence parkCent = m_robot.drive.trajectorySequenceBuilder(deliverCent.end())
@@ -162,7 +162,7 @@ public class BlueWing extends LinearOpMode {
         sleep(750);
         m_robot.arm.gripperHoldAll();
         m_robot.arm.pixelHold();
-        sleep(11000);
+        sleep(11000);  //Delay time here
 
         //Deliver to backdrop
         timer.reset();

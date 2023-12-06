@@ -53,12 +53,12 @@ public class Drive extends LinearOpMode {
         //m_robot.drive.setMotorPowers(-.5,-.5,-.5,-.5); // Set motor power to 50%???
 
         while (opModeIsActive() && !isStopRequested()) {
-            if(gamepad1.dpad_right) {fieldRel = true;}
+            //if(gamepad1.dpad_right) {fieldRel = true;}
             if(gamepad1.dpad_left) {fieldRel = false;}
-            if(gamepad1.b && gamepad1.x) {
-                m_robot.drive.resetGyro();
-                fieldRel = true;
-            }
+//            if(gamepad1.b && gamepad1.x) {
+//                m_robot.drive.resetGyro();
+//                fieldRel = true;
+//            }
             if(gamepad1.right_bumper) {
                 speedScale = NORMAL_SPEED;
             } else if (gamepad1.left_bumper) {
@@ -121,6 +121,8 @@ public class Drive extends LinearOpMode {
             telemetry.addData("Launcher position", m_robot.droneLauncher.launchPos.getPosition());
             telemetry.addData("Trigger position", m_robot.droneLauncher.trigger.getPosition());
             telemetry.addLine();
+            telemetry.addData("Left Climer", m_robot.climber.getLeftEncoder());
+            telemetry.addData("Right Climber", m_robot.climber.getRightEncoder());
             //telemetry.addData("Left Distance", m_robot.distanceSensors.getLeft());
             //telemetry.addData("Right Distance", m_robot.distanceSensors.getRight());
             //telemetry.addData("Wall Angle", m_robot.distanceSensors.getRobotAngle());
@@ -201,9 +203,11 @@ public class Drive extends LinearOpMode {
             }
 
             //Climber controls
-            if(gamepad1.dpad_up){
+            if (gamepad1.dpad_right && gamepad1.left_trigger > 0.5) {
+                m_robot.climber.runClimberUp();
+            } else if (gamepad1.dpad_up) {
                 m_robot.climber.runClimber(0.8);
-            } else if(gamepad1.dpad_down){
+            } else if (gamepad1.dpad_down) {
                 m_robot.climber.runClimber(-0.5);
             } else m_robot.climber.runClimber(0);
 

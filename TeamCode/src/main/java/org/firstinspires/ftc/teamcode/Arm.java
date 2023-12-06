@@ -40,7 +40,7 @@ public class Arm {
 
     final double SWIVEL_READY = 0.15;
     final double SWIVEL_PICKUP = 0.18;
-    final double SWIVEL_PLACE_FRONT = 0.25;
+    final double SWIVEL_PLACE_FRONT = 0.28;
     final double SWIVEL_HOLD = 0.85;
     final double SWIVEL_BACK_LOW = 0.61;
     final double SWIVEL_BACK_HIGH = 0.71;

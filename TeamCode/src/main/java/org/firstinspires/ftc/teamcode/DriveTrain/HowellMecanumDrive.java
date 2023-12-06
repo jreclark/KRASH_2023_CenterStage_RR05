@@ -73,8 +73,7 @@ public class HowellMecanumDrive extends MecanumDrive {
     ElapsedTime timer = new ElapsedTime();
 
     //BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-    private static Boolean useNavx = true;
+    private static Boolean useNavx = false;
     public NavxMicroNavigationSensor navX = null;
     public IntegratingGyroscope gyro = null;
     public double navXOffset = 0;
