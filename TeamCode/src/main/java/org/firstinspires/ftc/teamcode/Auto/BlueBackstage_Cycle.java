@@ -34,6 +34,14 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         m_robot.arm.autoInit();
 
         Pose2d startPose = new Pose2d(12, 62, Math.toRadians(90));
+        Pose2d leftDeliverPose = new Pose2d(48, 44, Math.toRadians(0));
+        Pose2d rightDeliverPose = new Pose2d(48, 26, Math.toRadians(0));
+        Pose2d centDeliverPose = new Pose2d(48, 32, Math.toRadians(0));
+        Pose2d cyclePoint = new Pose2d(24, 58, Math.toRadians(-179.9));
+        Pose2d farCyclePoint = new Pose2d(-36, 58, Math.toRadians(-179.9));
+        Pose2d stopPoint = new Pose2d(-59, 35, Math.toRadians(-179.9));
+        Pose2d pickupPoint = new Pose2d(-63, 35, Math.toRadians(-179.9));
+
         m_robot.drive.setPoseEstimate(startPose);
 
         //Create optional constraints for slower acceleration and speed
@@ -42,6 +50,8 @@ public class BlueBackstage_Cycle extends LinearOpMode {
 
         TrajectorySequence drop = null;
         TrajectorySequence deliver = null;
+        TrajectorySequence cycle = null;
+        TrajectorySequence cycleDeliver = null;
         TrajectorySequence park = null;
 
         //Middle Position Paths
@@ -54,10 +64,28 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         TrajectorySequence deliverCent = m_robot.drive.trajectorySequenceBuilder(dropCent.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(47.5, 32, Math.toRadians(0)))
+                .lineToLinearHeading(centDeliverPose)
                 .build();
 
-        TrajectorySequence parkCent = m_robot.drive.trajectorySequenceBuilder(deliverCent.end())
+        TrajectorySequence cycleCent = m_robot.drive.trajectorySequenceBuilder(deliverCent.end())
+                .setTangent(Math.toRadians(180))
+                .splineToSplineHeading(cyclePoint, cyclePoint.getHeading())
+                .splineToSplineHeading(farCyclePoint, farCyclePoint.getHeading())
+                .splineToConstantHeading(new Vector2d(stopPoint.getX(), stopPoint.getY()), stopPoint.getHeading())
+                .splineToConstantHeading(new Vector2d(pickupPoint.getX(), pickupPoint.getY()), pickupPoint.getHeading())
+                .build();
+
+        TrajectorySequence cycleDeliverCent = m_robot.drive.trajectorySequenceBuilder(cycleCent.end())
+                .setTangent(Math.toRadians(0))
+                .lineToConstantHeading(new Vector2d(cycleCent.end().getX()+5, cycleCent.end().getY()))
+                .lineToConstantHeading(new Vector2d(cycleCent.end().getX()+5, cycleCent.end().getY()+8))
+                .splineToLinearHeading(stopPoint.plus(new Pose2d(0,8)), 0)
+                .splineToLinearHeading(farCyclePoint, 0)
+                .splineToSplineHeading(cyclePoint, 0)
+                .splineToSplineHeading(leftDeliverPose.plus(new Pose2d(0,-4)), 0)
+                .build();
+
+        TrajectorySequence parkCent = m_robot.drive.trajectorySequenceBuilder(cycleDeliverCent.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-90))
                 .lineToLinearHeading(new Pose2d(deliverCent.end().getX() - 2, 60, Math.toRadians(0)))
@@ -65,7 +93,6 @@ public class BlueBackstage_Cycle extends LinearOpMode {
                 .build();
 
         //Left Position Paths
-        Pose2d leftDeliverPose = new Pose2d(48, 44, Math.toRadians(0));
         TrajectorySequence dropLeft = m_robot.drive.trajectorySequenceBuilder(startPose)
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-90))
@@ -96,7 +123,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         TrajectorySequence deliverRight = m_robot.drive.trajectorySequenceBuilder(dropRight.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(48, 26, Math.toRadians(0)))
+                .lineToLinearHeading(rightDeliverPose)
                 .build();
 
         TrajectorySequence parkRight = m_robot.drive.trajectorySequenceBuilder(deliverRight.end())
@@ -106,26 +133,9 @@ public class BlueBackstage_Cycle extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(60, 62, Math.toRadians(0)))
                 .build();
 
-        Pose2d cyclePoint = new Pose2d(24, 58, Math.toRadians(-179.9));
-        Pose2d farCyclePoint = new Pose2d(-36, 58, Math.toRadians(-179.9));
-        Pose2d stopPoint = new Pose2d(-59, 35, Math.toRadians(-179.9));
-        Pose2d pickupPoint = new Pose2d(-63, 35, Math.toRadians(-179.9));
 
-        TrajectorySequence cycleCent = m_robot.drive.trajectorySequenceBuilder(deliverCent.end())
-                .setTangent(Math.toRadians(180))
-                .splineToSplineHeading(cyclePoint, cyclePoint.getHeading())
-                .splineToSplineHeading(farCyclePoint, farCyclePoint.getHeading())
-                .splineToConstantHeading(new Vector2d(stopPoint.getX(), stopPoint.getY()), stopPoint.getHeading())
-                .splineToConstantHeading(new Vector2d(pickupPoint.getX(), pickupPoint.getY()), pickupPoint.getHeading())
-                .build();
 
-        TrajectorySequence cycleBack = m_robot.drive.trajectorySequenceBuilder(pickupPoint)
-                .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(stopPoint, 0)
-                .splineToLinearHeading(farCyclePoint, 0)
-                .splineToSplineHeading(cyclePoint, 0)
-                .splineToSplineHeading(leftDeliverPose, 0)
-                .build();
+
 
         while ((!isStarted() && !isStopRequested())) {
             telemetry.addData("x = ", visionProcessor.getSelectedX());
@@ -157,6 +167,8 @@ public class BlueBackstage_Cycle extends LinearOpMode {
             default:
                 drop = dropCent;
                 deliver = deliverCent;
+                cycle = cycleCent;
+                cycleDeliver = cycleDeliverCent;
                 park = parkCent;
         }
 
@@ -182,7 +194,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         m_robot.drive.followTrajectorySequenceAsync(deliver);
         while (m_robot.drive.isBusy()) {
             m_robot.drive.update();
-            if (timer.seconds() > 0) {
+            if (timer.seconds() > 0.5) {
                 m_robot.arm.readyDeliverFront();
             }
         }
@@ -197,7 +209,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         if (position == ContourTSEProcessor.Selected.RIGHT) {
             m_robot.drive.followTrajectorySequence(park);
         } else {
-            m_robot.drive.followTrajectorySequence(cycleCent);
+            m_robot.drive.followTrajectorySequence(cycle);
 
             timer.reset();
             while (timer.seconds() <= 1.5) {
@@ -211,21 +223,23 @@ public class BlueBackstage_Cycle extends LinearOpMode {
 
             //Deliver to backdrop again
             timer.reset();
-            m_robot.drive.followTrajectorySequence(cycleBack);
+            m_robot.drive.followTrajectorySequenceAsync(cycleDeliver);
             while (m_robot.drive.isBusy()) {
                 m_robot.drive.update();
-                if (timer.seconds() > 0) {
+                if (timer.seconds() > 3.5) {
                     m_robot.arm.readyDeliverFront();
                 }
             }
 
             // Fabrizio added code...still needs to be tested!
-            m_robot.arm.drop2();
+            m_robot.arm.drop1();
             sleep(1000);
             m_robot.arm.runExtensionToPosition(m_robot.arm.EXTENSION_PICKUP);
             sleep(1000);
-            m_robot.arm.readyPickup(false);
-            //sleep(1000);
+            m_robot.arm.runExtensionToPosition(m_robot.arm.EXTENSION_DELIVER_FRONT);
+            sleep(1000);
+            m_robot.arm.drop2();
+            sleep(1000);
         }
     }
 }

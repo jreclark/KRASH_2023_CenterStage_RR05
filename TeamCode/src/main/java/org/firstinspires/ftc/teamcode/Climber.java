@@ -13,7 +13,7 @@ public class Climber {
     private DcMotorEx rightClimb;
     Telemetry telemetry;
 
-    private int climberTarget = 500;
+    private int climberTarget = 7150;
 
     public Climber(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -36,8 +36,8 @@ public class Climber {
     }
 
     public double getLeftEncoder(){
-        //return leftClimb.getCurrentPosition();
-        return leftClimb.getCurrent(CurrentUnit.AMPS);
+        return leftClimb.getCurrentPosition();
+        //return leftClimb.getCurrent(CurrentUnit.AMPS);
     }
     public int getRightEncoder(){
         return rightClimb.getCurrentPosition();

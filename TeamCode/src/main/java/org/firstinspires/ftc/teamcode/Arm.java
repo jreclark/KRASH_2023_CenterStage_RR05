@@ -43,7 +43,7 @@ public class Arm {
     final double SWIVEL_PLACE_FRONT = 0.28;
     final double SWIVEL_HOLD = 0.85;
     final double SWIVEL_BACK_LOW = 0.61;
-    final double SWIVEL_BACK_HIGH = 0.71;
+    final double SWIVEL_BACK_HIGH = 0.74;
 
     final int ARM_MIN = 0;
     final int ARM_MIN_SLOW = 400;
@@ -64,8 +64,8 @@ public class Arm {
     final int ARM_DELIVER_BACK = 4350;
     final int EXTENSION_DELIVER_BACK = 250;
 
-    final int ARM_DELIVER_FRONT = 1000; // 1100
-    final int EXTENSION_DELIVER_FRONT = 390; //400
+    final int ARM_DELIVER_FRONT = 1100; // 1100
+    public final int EXTENSION_DELIVER_FRONT = 390; //400
 
     final int ARM_PIXEL_SPIKE = 460;
     final int EXTENSION_PIXEL_SPIKE = 370;

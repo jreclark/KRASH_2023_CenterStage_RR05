@@ -35,7 +35,12 @@ public class RedWing_Bonus extends LinearOpMode {
         m_robot = new Robot(hardwareMap, telemetry, false);
         m_robot.arm.autoInit();
 
+        double xPlace = 49.5;
         Pose2d startPose = new Pose2d(-36, -62, Math.toRadians(-90));
+        Pose2d leftDeliverPose = new Pose2d(xPlace, -31, Math.toRadians(0));
+        Pose2d centDeliverPose = new Pose2d(xPlace, -36, Math.toRadians(0));
+        Pose2d rightDeliverPose = new Pose2d(xPlace, -41, Math.toRadians(0));
+
         m_robot.drive.setPoseEstimate(startPose);
 
         //Create optional constraints for slower acceleration and speed
@@ -57,7 +62,7 @@ public class RedWing_Bonus extends LinearOpMode {
 
         TrajectorySequence pickupExtraCent = m_robot.drive.trajectorySequenceBuilder(dropCent.end())
                 //.setVelConstraint(slowSpeed)
-                //.turn(Math.toRadians(-120))
+                .turn(Math.toRadians(-160))
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(-64, -11, Math.toRadians(-179.99)), Math.toRadians(-179.99))
                 .build();
@@ -65,18 +70,18 @@ public class RedWing_Bonus extends LinearOpMode {
         TrajectorySequence deliverCent = m_robot.drive.trajectorySequenceBuilder(pickupExtraCent.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(0))
-                .lineToConstantHeading(new Vector2d(-46, -11))
+                .lineToConstantHeading(new Vector2d(-46, -12))
                 .turn(Math.toRadians(179.99))
                 .lineToLinearHeading(new Pose2d(36, -11, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(48, -26, Math.toRadians(0)))  //Drop on the left side
+                .lineToLinearHeading(leftDeliverPose)  //Drop on the left side
                 .build();
 
         TrajectorySequence deliverGoldCent = m_robot.drive.trajectorySequenceBuilder(deliverCent.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-179.99))
-                .lineToConstantHeading(new Vector2d(44, -26))
-                .lineToConstantHeading(new Vector2d(44, -34))
-                .lineToConstantHeading(new Vector2d(48, -34))
+                .lineToConstantHeading(new Vector2d(44, leftDeliverPose.getY()))
+                .lineToConstantHeading(new Vector2d(44, centDeliverPose.getY()))
+                .lineToConstantHeading(centDeliverPose.vec())
                 .build();
 
         TrajectorySequence parkCent = m_robot.drive.trajectorySequenceBuilder(deliverGoldCent.end())
@@ -88,31 +93,39 @@ public class RedWing_Bonus extends LinearOpMode {
 
 
         //Left Position Paths
+//        Old Version
+//        TrajectorySequence dropLeft = m_robot.drive.trajectorySequenceBuilder(startPose)
+//                //.setVelConstraint(slowSpeed)
+//                .setTangent(Math.toRadians(90))
+//                //.lineToConstantHeading(new Vector2d(-40, -46))
+//                .lineToConstantHeading(new Vector2d(-40, -28))
+//                .setTangent(Math.toRadians(-179.99))
+//                .splineToLinearHeading(new Pose2d(-55, -17, Math.toRadians(-60)), Math.toRadians(90))
+//                .build();
+
         TrajectorySequence dropLeft = m_robot.drive.trajectorySequenceBuilder(startPose)
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(90))
-                //.lineToConstantHeading(new Vector2d(-40, -46))
-                .lineToConstantHeading(new Vector2d(-40, -35))
-                .setTangent(Math.toRadians(-179.99))
-                .splineToLinearHeading(new Pose2d(-55, -17, Math.toRadians(-60)), Math.toRadians(90))
+                .lineToConstantHeading(new Vector2d(startPose.getX(), -14))
+                .turn(Math.toRadians(-45))
                 .build();
 
         TrajectorySequence pickupExtraLeft = m_robot.drive.trajectorySequenceBuilder(dropLeft.end())
                 //.setVelConstraint(slowSpeed)
-                .turn(Math.toRadians(-120))
-                .setTangent(Math.toRadians(-179.99))
+                .turn(Math.toRadians(-45))
+                .setTangent(Math.toRadians(90))
                 .splineToConstantHeading(new Vector2d(-64, -11), Math.toRadians(-179.99))
                 .build();
 
         TrajectorySequence deliverLeft = m_robot.drive.trajectorySequenceBuilder(pickupExtraLeft.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(0))
-                .lineToConstantHeading(new Vector2d(-46, -11))
+                .lineToConstantHeading(new Vector2d(-46, -12))
                 .turn(Math.toRadians(179.99))
                 //.lineToLinearHeading(new Pose2d(-30, -11, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(36, -11, Math.toRadians(0)))
                 //.lineToLinearHeading(new Pose2d(48, -31.5, Math.toRadians(0)))  //Scoring Position
-                .lineToLinearHeading(new Pose2d(48, -40, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(xPlace, -40, Math.toRadians(0)))
                 .build();
 
         TrajectorySequence deliverGoldLeft = m_robot.drive.trajectorySequenceBuilder(deliverLeft.end())
@@ -120,8 +133,9 @@ public class RedWing_Bonus extends LinearOpMode {
                 .setTangent(Math.toRadians(-179.99))
                 .lineToConstantHeading(new Vector2d(44, -40))
                 .lineToConstantHeading(new Vector2d(44, -24))
-                .lineToConstantHeading(new Vector2d(48, -24))
+                .lineToConstantHeading(new Vector2d(xPlace, -24))
                 .build();
+
 
         TrajectorySequence parkLeft = m_robot.drive.trajectorySequenceBuilder(deliverGoldLeft.end())
                 //.setVelConstraint(slowSpeed)
@@ -139,26 +153,27 @@ public class RedWing_Bonus extends LinearOpMode {
 
         TrajectorySequence pickupExtraRight = m_robot.drive.trajectorySequenceBuilder(dropCent.end())
                 //.setVelConstraint(slowSpeed)
-                //.turn(Math.toRadians(-120))
+                .turn(Math.toRadians(-179.99))
                 .setTangent(Math.toRadians(-179.99))
+                .splineToLinearHeading(new Pose2d(-50, -20, Math.toRadians(-179.99)), Math.toRadians(-179.99))
                 .splineToLinearHeading(new Pose2d(-64, -11, Math.toRadians(-179.99)), Math.toRadians(-179.99))
                 .build();
 
         TrajectorySequence deliverRight = m_robot.drive.trajectorySequenceBuilder(pickupExtraRight.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(0))
-                .lineToConstantHeading(new Vector2d(-46, -11))
+                .lineToConstantHeading(new Vector2d(-46, -12))
                 .turn(Math.toRadians(179.99))
                 .lineToLinearHeading(new Pose2d(36, -11, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(48, -26, Math.toRadians(0)))  //Drop on the left side
+                .lineToLinearHeading(leftDeliverPose)  //Drop on the left side
                 .build();
 
         TrajectorySequence deliverGoldRight = m_robot.drive.trajectorySequenceBuilder(deliverRight.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-179.99))
-                .lineToConstantHeading(new Vector2d(44, -26))
-                .lineToConstantHeading(new Vector2d(44, -40))
-                .lineToConstantHeading(new Vector2d(48, -40))
+                .lineToConstantHeading(new Vector2d(44, leftDeliverPose.getY()))
+                .lineToConstantHeading(new Vector2d(44, rightDeliverPose.getY()))
+                .lineToConstantHeading(rightDeliverPose.vec())
                 .build();
 
         TrajectorySequence parkRight = m_robot.drive.trajectorySequenceBuilder(deliverGoldRight.end())
@@ -195,12 +210,16 @@ public class RedWing_Bonus extends LinearOpMode {
                 break;
             case RIGHT:
                 drop = dropRight;
+                pickup = pickupExtraRight;
                 deliver = deliverRight;
+                deliverGold = deliverGoldRight;
                 park = parkRight;
                 break;
             default:
                 drop = dropCent;
+                pickup = pickupExtraCent;
                 deliver = deliverCent;
+                deliverGold = deliverGoldCent;
                 park = parkCent;
         }
 
