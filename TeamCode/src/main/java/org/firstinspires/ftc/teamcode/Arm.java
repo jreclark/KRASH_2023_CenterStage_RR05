@@ -64,8 +64,11 @@ public class Arm {
     final int ARM_DELIVER_BACK = 4350;
     final int EXTENSION_DELIVER_BACK = 250;
 
-    final int ARM_DELIVER_FRONT = 1100; // 1100
+    final int ARM_DELIVER_FRONT = 1000; // 1100
     public final int EXTENSION_DELIVER_FRONT = 390; //400
+
+    final int ARM_DELIVER_FRONT_HIGH = 1100; // 1100
+    public final int EXTENSION_DELIVER_FRONT_HIGH = 390; //400
 
     final int ARM_PIXEL_SPIKE = 460;
     final int EXTENSION_PIXEL_SPIKE = 370;
@@ -145,10 +148,20 @@ public class Arm {
 
     public void readyDeliverBackLow(){setSwivel(SWIVEL_BACK_LOW);}
 
-    public void readyDeliverFront(){
+    public void readyDeliverFront(boolean extend) {
         setSwivel(SWIVEL_PLACE_FRONT);
         runShoulderToPosition(ARM_DELIVER_FRONT);
-        runExtensionToPosition(EXTENSION_DELIVER_FRONT);
+        if (extend) {
+            runExtensionToPosition(EXTENSION_DELIVER_FRONT);
+        } else {
+            runExtensionToPosition(EXTENSION_DELIVER_FRONT - 90);
+        }
+    }
+
+    public void readyDeliverFrontHigh(){
+        setSwivel(SWIVEL_PLACE_FRONT);
+        runShoulderToPosition(ARM_DELIVER_FRONT_HIGH);
+        runExtensionToPosition(EXTENSION_DELIVER_FRONT_HIGH);
     }
 
     public void readyDeliverBackHigh(){
