@@ -34,11 +34,11 @@ public class BlueWing_Bonus extends LinearOpMode {
         m_robot = new Robot(hardwareMap, telemetry, false);
         m_robot.arm.autoInit();
 
-        double xPlace = 49.5;
+        double xPlace = 49;
         Pose2d startPose = new Pose2d(-36, 62, Math.toRadians(90));
-        Pose2d leftDeliverPose = new Pose2d(xPlace, 31, Math.toRadians(0));
-        Pose2d centDeliverPose = new Pose2d(xPlace, 36, Math.toRadians(0));
-        Pose2d rightDeliverPose = new Pose2d(xPlace, 41, Math.toRadians(0));
+        Pose2d rightDeliverPose = new Pose2d(xPlace, 27, Math.toRadians(0));
+        Pose2d centDeliverPose = new Pose2d(xPlace, 32, Math.toRadians(0));
+        Pose2d leftDeliverPose = new Pose2d(xPlace, 38, Math.toRadians(0));
 
         m_robot.drive.setPoseEstimate(startPose);
 
@@ -55,7 +55,7 @@ public class BlueWing_Bonus extends LinearOpMode {
         //Middle Position Paths
         TrajectorySequence dropCent = m_robot.drive.trajectorySequenceBuilder(startPose)
                 //.setVelConstraint(slowSpeed)
-                .setTangent(Math.toRadians(90))
+                .setTangent(Math.toRadians(-90))
                 .splineToSplineHeading(new Pose2d(-53, 15, Math.toRadians(30)), Math.toRadians(-90))
                 .build();
 
@@ -63,7 +63,7 @@ public class BlueWing_Bonus extends LinearOpMode {
                 //.setVelConstraint(slowSpeed)
                 .turn(Math.toRadians(160))
                 .setTangent(Math.toRadians(-90))
-                .splineToLinearHeading(new Pose2d(-64, 11, Math.toRadians(179.99)), Math.toRadians(179.99))
+                .splineToLinearHeading(new Pose2d(-64.5, 12, Math.toRadians(179.99)), Math.toRadians(179.99))
                 .build();
 
         TrajectorySequence deliverCent = m_robot.drive.trajectorySequenceBuilder(pickupExtraCent.end())
@@ -72,13 +72,13 @@ public class BlueWing_Bonus extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-46, 12))
                 .turn(Math.toRadians(179.99))
                 .lineToLinearHeading(new Pose2d(36, 11, Math.toRadians(0)))
-                .lineToLinearHeading(leftDeliverPose)  //Drop on the left side
+                .lineToLinearHeading(rightDeliverPose)  //Drop on the left side
                 .build();
 
         TrajectorySequence deliverGoldCent = m_robot.drive.trajectorySequenceBuilder(deliverCent.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(179.99))
-                .lineToConstantHeading(new Vector2d(44, leftDeliverPose.getY()))
+                .lineToConstantHeading(new Vector2d(44, rightDeliverPose.getY()))
                 .lineToConstantHeading(new Vector2d(44, centDeliverPose.getY()))
                 .lineToConstantHeading(centDeliverPose.vec())
                 .build();
@@ -91,9 +91,9 @@ public class BlueWing_Bonus extends LinearOpMode {
                 .build();
 
 
-        //Left Position Paths
+        //Right Position Paths
 //        Old Version
-//        TrajectorySequence dropLeft = m_robot.drive.trajectorySequenceBuilder(startPose)
+//        TrajectorySequence dropRight = m_robot.drive.trajectorySequenceBuilder(startPose)
 //                //.setVelConstraint(slowSpeed)
 //                .setTangent(Math.toRadians(90))
 //                //.lineToConstantHeading(new Vector2d(-40, -46))
@@ -102,21 +102,21 @@ public class BlueWing_Bonus extends LinearOpMode {
 //                .splineToLinearHeading(new Pose2d(-55, -17, Math.toRadians(-60)), Math.toRadians(90))
 //                .build();
 
-        TrajectorySequence dropLeft = m_robot.drive.trajectorySequenceBuilder(startPose)
+        TrajectorySequence dropRight = m_robot.drive.trajectorySequenceBuilder(startPose)
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-90))
                 .lineToConstantHeading(new Vector2d(startPose.getX(), 14))
                 .turn(Math.toRadians(45))
                 .build();
 
-        TrajectorySequence pickupExtraLeft = m_robot.drive.trajectorySequenceBuilder(dropLeft.end())
+        TrajectorySequence pickupExtraRight = m_robot.drive.trajectorySequenceBuilder(dropRight.end())
                 //.setVelConstraint(slowSpeed)
                 .turn(Math.toRadians(45))
                 .setTangent(Math.toRadians(-90))
-                .splineToConstantHeading(new Vector2d(-64, 11), Math.toRadians(179.99))
+                .splineToConstantHeading(new Vector2d(-64.5, 12), Math.toRadians(179.99))
                 .build();
 
-        TrajectorySequence deliverLeft = m_robot.drive.trajectorySequenceBuilder(pickupExtraLeft.end())
+        TrajectorySequence deliverRight = m_robot.drive.trajectorySequenceBuilder(pickupExtraRight.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(0))
                 .lineToConstantHeading(new Vector2d(-46, 12))
@@ -127,7 +127,7 @@ public class BlueWing_Bonus extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(xPlace, 40, Math.toRadians(0)))
                 .build();
 
-        TrajectorySequence deliverGoldLeft = m_robot.drive.trajectorySequenceBuilder(deliverLeft.end())
+        TrajectorySequence deliverGoldRight = m_robot.drive.trajectorySequenceBuilder(deliverRight.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(179.99))
                 .lineToConstantHeading(new Vector2d(44, 40))
@@ -136,49 +136,49 @@ public class BlueWing_Bonus extends LinearOpMode {
                 .build();
 
 
-        TrajectorySequence parkLeft = m_robot.drive.trajectorySequenceBuilder(deliverGoldLeft.end())
+        TrajectorySequence parkRight = m_robot.drive.trajectorySequenceBuilder(deliverGoldRight.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-90))
-                .lineToLinearHeading(new Pose2d(deliverLeft.end().getX()-2, 12, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(deliverRight.end().getX()-2, 12, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(60, 12, Math.toRadians(0)))
                 .build();
 
-        //Right Position Paths
-        TrajectorySequence dropRight = m_robot.drive.trajectorySequenceBuilder(startPose)
+        //Left Position Paths
+        TrajectorySequence dropLeft = m_robot.drive.trajectorySequenceBuilder(startPose)
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-90))
                 .lineToLinearHeading(new Pose2d(-42, 32, Math.toRadians(0)))
                 .build();
 
-        TrajectorySequence pickupExtraRight = m_robot.drive.trajectorySequenceBuilder(dropCent.end())
+        TrajectorySequence pickupExtraLeft = m_robot.drive.trajectorySequenceBuilder(dropLeft.end())
                 //.setVelConstraint(slowSpeed)
                 .turn(Math.toRadians(179.99))
                 .setTangent(Math.toRadians(179.99))
                 .splineToLinearHeading(new Pose2d(-50, 20, Math.toRadians(179.99)), Math.toRadians(179.99))
-                .splineToLinearHeading(new Pose2d(-64, 11, Math.toRadians(179.99)), Math.toRadians(179.99))
+                .splineToLinearHeading(new Pose2d(-64.5, 12, Math.toRadians(179.99)), Math.toRadians(179.99))
                 .build();
 
-        TrajectorySequence deliverRight = m_robot.drive.trajectorySequenceBuilder(pickupExtraRight.end())
+        TrajectorySequence deliverLeft = m_robot.drive.trajectorySequenceBuilder(pickupExtraLeft.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(0))
                 .lineToConstantHeading(new Vector2d(-46, 12))
                 .turn(Math.toRadians(179.99))
                 .lineToLinearHeading(new Pose2d(36, 11, Math.toRadians(0)))
-                .lineToLinearHeading(leftDeliverPose)  //Drop on the left side
+                .lineToLinearHeading(rightDeliverPose)  //Drop on the left side
                 .build();
 
-        TrajectorySequence deliverGoldRight = m_robot.drive.trajectorySequenceBuilder(deliverRight.end())
+        TrajectorySequence deliverGoldLeft = m_robot.drive.trajectorySequenceBuilder(deliverLeft.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(179.99))
+                .lineToConstantHeading(new Vector2d(44, deliverLeft.end().getY()))
                 .lineToConstantHeading(new Vector2d(44, leftDeliverPose.getY()))
-                .lineToConstantHeading(new Vector2d(44, rightDeliverPose.getY()))
-                .lineToConstantHeading(rightDeliverPose.vec())
+                .lineToConstantHeading(leftDeliverPose.vec())
                 .build();
 
-        TrajectorySequence parkRight = m_robot.drive.trajectorySequenceBuilder(deliverGoldRight.end())
+        TrajectorySequence parkLeft = m_robot.drive.trajectorySequenceBuilder(deliverGoldLeft.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-90))
-                .lineToLinearHeading(new Pose2d(deliverRight.end().getX()-2, 12, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(deliverLeft.end().getX()-2, 12, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(60, 12, Math.toRadians(0)))
                 .build();
 

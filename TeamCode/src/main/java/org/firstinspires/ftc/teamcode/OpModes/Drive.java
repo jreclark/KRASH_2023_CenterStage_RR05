@@ -152,7 +152,7 @@ public class Drive extends LinearOpMode {
 
             if (gamepad2.dpad_right) {
                 armManual = false;
-                m_robot.arm.readyDeliverFront();
+                m_robot.arm.readyDeliverFront(true);
             }
             if (gamepad2.dpad_up) {
                 armManual = false;

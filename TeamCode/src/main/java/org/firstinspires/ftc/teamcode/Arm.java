@@ -38,8 +38,8 @@ public class Arm {
     final double PUSHER_PUSH1 =0.65;
     final double PUSHER_PUSH2 = 0.55;
 
-    final double SWIVEL_READY = 0.15;
-    final double SWIVEL_PICKUP = 0.18;
+    final double SWIVEL_READY = 0.14;
+    final double SWIVEL_PICKUP = 0.21;
     final double SWIVEL_PLACE_FRONT = 0.28;
     final double SWIVEL_HOLD = 0.85;
     final double SWIVEL_BACK_LOW = 0.61;
@@ -67,7 +67,7 @@ public class Arm {
     final int ARM_DELIVER_FRONT = 1000; // 1100
     public final int EXTENSION_DELIVER_FRONT = 390; //400
 
-    final int ARM_DELIVER_FRONT_HIGH = 1100; // 1100
+    final int ARM_DELIVER_FRONT_HIGH = 1150; // 1100
     public final int EXTENSION_DELIVER_FRONT_HIGH = 390; //400
 
     final int ARM_PIXEL_SPIKE = 460;
