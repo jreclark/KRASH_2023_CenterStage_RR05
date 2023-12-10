@@ -173,7 +173,7 @@ public class RedWing extends LinearOpMode {
         while(m_robot.drive.isBusy()){
             m_robot.drive.update();
             if(timer.seconds()>3.5){
-                m_robot.arm.readyDeliverFront();
+                m_robot.arm.readyDeliverFrontHigh();
             }
         }
 

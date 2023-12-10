@@ -77,9 +77,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
 
         TrajectorySequence cycleDeliverCent = m_robot.drive.trajectorySequenceBuilder(cycleCent.end())
                 .setTangent(Math.toRadians(0))
-                .lineToConstantHeading(new Vector2d(cycleCent.end().getX()+5, cycleCent.end().getY()))
-                .lineToConstantHeading(new Vector2d(cycleCent.end().getX()+5, cycleCent.end().getY()+8))
-                .splineToLinearHeading(stopPoint.plus(new Pose2d(0,8)), 0)
+                .splineToLinearHeading(stopPoint, 0)
                 .splineToLinearHeading(farCyclePoint, 0)
                 .splineToSplineHeading(cyclePoint, 0)
                 .splineToSplineHeading(leftDeliverPose.plus(new Pose2d(0,-4)), 0)
@@ -104,6 +102,22 @@ public class BlueBackstage_Cycle extends LinearOpMode {
                 .setTangent(Math.toRadians(90))
                 .turn(-Math.toRadians(179.0))
                 .lineToLinearHeading(leftDeliverPose)
+                .build();
+
+        TrajectorySequence cycleLeft = m_robot.drive.trajectorySequenceBuilder(deliverLeft.end())
+                .setTangent(Math.toRadians(180))
+                .splineToSplineHeading(cyclePoint, cyclePoint.getHeading())
+                .splineToSplineHeading(farCyclePoint, farCyclePoint.getHeading())
+                .splineToConstantHeading(new Vector2d(stopPoint.getX(), stopPoint.getY()), stopPoint.getHeading())
+                .splineToConstantHeading(new Vector2d(pickupPoint.getX(), pickupPoint.getY()), pickupPoint.getHeading())
+                .build();
+
+        TrajectorySequence cycleDeliverLeft = m_robot.drive.trajectorySequenceBuilder(cycleLeft.end())
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(stopPoint, 0)
+                .splineToLinearHeading(farCyclePoint, 0)
+                .splineToSplineHeading(cyclePoint, 0)
+                .splineToSplineHeading(leftDeliverPose.plus(new Pose2d(0,-4)), 0)
                 .build();
 
         TrajectorySequence parkLeft = m_robot.drive.trajectorySequenceBuilder(deliverLeft.end())
@@ -157,11 +171,15 @@ public class BlueBackstage_Cycle extends LinearOpMode {
             case LEFT:
                 drop = dropLeft;
                 deliver = deliverLeft;
+                cycle = cycleLeft;
+                cycleDeliver = cycleDeliverLeft;
                 park = parkLeft;
                 break;
             case RIGHT:
                 drop = dropRight;
                 deliver = deliverRight;
+                cycle = null;
+                cycleDeliver = null;
                 park = parkRight;
                 break;
             default:
@@ -200,7 +218,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         }
 
         //Did not fully extend because we hit the backdrop
-        m_robot.arm.runExtensionToPosition(m_robot.arm.EXTENSION_PICKUP);
+        m_robot.arm.runExtensionToPosition(m_robot.arm.EXTENSION_DELIVER_FRONT);
         sleep(500);
 
 
@@ -232,7 +250,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
             while (m_robot.drive.isBusy()) {
                 m_robot.drive.update();
                 if (timer.seconds() > 3.5) {
-                    m_robot.arm.readyDeliverFront(true);
+                    m_robot.arm.readyDeliverFrontHigh();
                 }
             }
 

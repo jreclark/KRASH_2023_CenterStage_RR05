@@ -164,9 +164,13 @@ private FirstVisionProcessor visionProcessor;
         while(m_robot.drive.isBusy()){
             m_robot.drive.update();
             if(timer.seconds()>0){
-                m_robot.arm.readyDeliverFront();
+                m_robot.arm.readyDeliverFront(false);
             }
         }
+
+        //Did not fully extend because we hit the backdrop
+        m_robot.arm.runExtensionToPosition(m_robot.arm.EXTENSION_DELIVER_FRONT);
+        sleep(500);
 
         m_robot.arm.drop2();
         sleep(1000);
