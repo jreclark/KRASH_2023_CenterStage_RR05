@@ -38,8 +38,8 @@ public class RedWing_Bonus extends LinearOpMode {
         double xPlace = 49.5;
         Pose2d startPose = new Pose2d(-36, -62, Math.toRadians(-90));
         Pose2d leftDeliverPose = new Pose2d(xPlace, -31, Math.toRadians(0));
-        Pose2d centDeliverPose = new Pose2d(xPlace, -36, Math.toRadians(0));
-        Pose2d rightDeliverPose = new Pose2d(xPlace, -41, Math.toRadians(0));
+        Pose2d centDeliverPose = new Pose2d(xPlace, -39.5, Math.toRadians(0));
+        Pose2d rightDeliverPose = new Pose2d(xPlace, -42, Math.toRadians(0));
 
         m_robot.drive.setPoseEstimate(startPose);
 
@@ -132,8 +132,8 @@ public class RedWing_Bonus extends LinearOpMode {
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-179.99))
                 .lineToConstantHeading(new Vector2d(44, -40))
-                .lineToConstantHeading(new Vector2d(44, -24))
-                .lineToConstantHeading(new Vector2d(xPlace, -24))
+                .lineToConstantHeading(new Vector2d(44, -27))
+                .lineToConstantHeading(new Vector2d(xPlace, -27))
                 .build();
 
 
@@ -155,7 +155,7 @@ public class RedWing_Bonus extends LinearOpMode {
                 //.setVelConstraint(slowSpeed)
                 .turn(Math.toRadians(-179.99))
                 .setTangent(Math.toRadians(-179.99))
-                .splineToLinearHeading(new Pose2d(-50, -20, Math.toRadians(-179.99)), Math.toRadians(-179.99))
+                .splineToLinearHeading(new Pose2d(-50, -15, Math.toRadians(-179.99)), Math.toRadians(-179.99))
                 .splineToLinearHeading(new Pose2d(-64, -11, Math.toRadians(-179.99)), Math.toRadians(-179.99))
                 .build();
 
@@ -243,7 +243,7 @@ public class RedWing_Bonus extends LinearOpMode {
         //Drive to pickup extra
         m_robot.drive.followTrajectorySequence(pickup);
         timer.reset();
-        while (timer.seconds() <= 1.5) {
+        while (timer.seconds() <= 2.0) {
             m_robot.arm.pickupSequence();
         }
         m_robot.arm.swivelPickup();

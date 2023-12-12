@@ -50,13 +50,13 @@ private FirstVisionProcessor visionProcessor;
         TrajectorySequence dropCent = m_robot.drive.trajectorySequenceBuilder(startPose)
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(32, -24, Math.toRadians(-179)), Math.toRadians(90))
+                .splineToSplineHeading(new Pose2d(32, -23, Math.toRadians(-179)), Math.toRadians(90))
                 .build();
 
         TrajectorySequence deliverCent = m_robot.drive.trajectorySequenceBuilder(dropCent.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(47.5, -32, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(47.5, -34, Math.toRadians(0)))
                 .build();
 
         TrajectorySequence parkCent = m_robot.drive.trajectorySequenceBuilder(deliverCent.end())

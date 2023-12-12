@@ -242,7 +242,7 @@ public class BlueWing_Bonus extends LinearOpMode {
         //Drive to pickup extra
         m_robot.drive.followTrajectorySequence(pickup);
         timer.reset();
-        while (timer.seconds() <= 1.5) {
+        while (timer.seconds() <= 2.0) {
             m_robot.arm.pickupSequence();
         }
         m_robot.arm.swivelPickup();

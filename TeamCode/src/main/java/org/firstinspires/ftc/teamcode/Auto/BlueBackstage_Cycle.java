@@ -40,7 +40,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
         Pose2d cyclePoint = new Pose2d(24, 58, Math.toRadians(-179.9));
         Pose2d farCyclePoint = new Pose2d(-36, 58, Math.toRadians(-179.9));
         Pose2d stopPoint = new Pose2d(-59, 35, Math.toRadians(-179.9));
-        Pose2d pickupPoint = new Pose2d(-63, 35, Math.toRadians(-179.9));
+        Pose2d pickupPoint = new Pose2d(-64, 35, Math.toRadians(-179.9));
 
         m_robot.drive.setPoseEstimate(startPose);
 
@@ -80,7 +80,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
                 .splineToLinearHeading(stopPoint, 0)
                 .splineToLinearHeading(farCyclePoint, 0)
                 .splineToSplineHeading(cyclePoint, 0)
-                .splineToSplineHeading(leftDeliverPose.plus(new Pose2d(0,-4)), 0)
+                .splineToLinearHeading(leftDeliverPose.plus(new Pose2d(0,-5.5)), 0)
                 .build();
 
         TrajectorySequence parkCent = m_robot.drive.trajectorySequenceBuilder(cycleDeliverCent.end())
@@ -117,7 +117,7 @@ public class BlueBackstage_Cycle extends LinearOpMode {
                 .splineToLinearHeading(stopPoint, 0)
                 .splineToLinearHeading(farCyclePoint, 0)
                 .splineToSplineHeading(cyclePoint, 0)
-                .splineToSplineHeading(leftDeliverPose.plus(new Pose2d(0,-4)), 0)
+                .splineToSplineHeading(centDeliverPose.plus(new Pose2d(0,-4)), 0)
                 .build();
 
         TrajectorySequence parkLeft = m_robot.drive.trajectorySequenceBuilder(deliverLeft.end())
@@ -262,6 +262,8 @@ public class BlueBackstage_Cycle extends LinearOpMode {
             m_robot.arm.runExtensionToPosition(m_robot.arm.EXTENSION_DELIVER_FRONT);
             sleep(1000);
             m_robot.arm.drop2();
+            sleep(1000);
+            m_robot.arm.runExtensionToPosition(m_robot.arm.EXTENSION_PICKUP);
             sleep(1000);
         }
     }
