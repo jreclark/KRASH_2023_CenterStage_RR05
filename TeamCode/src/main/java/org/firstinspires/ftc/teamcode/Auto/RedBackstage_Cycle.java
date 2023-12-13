@@ -36,12 +36,12 @@ public class RedBackstage_Cycle extends LinearOpMode {
 
         Pose2d startPose = new Pose2d(12, -62, Math.toRadians(-90));
         Pose2d rightDeliverPose = new Pose2d(48, -44, Math.toRadians(0));
-        Pose2d leftDeliverPose = new Pose2d(48, -26, Math.toRadians(0));
-        Pose2d centDeliverPose = new Pose2d(48, -32, Math.toRadians(0));
-        Pose2d cyclePoint = new Pose2d(24, -58, Math.toRadians(-179.9));
-        Pose2d farCyclePoint = new Pose2d(-36, -58, Math.toRadians(-179.9));
-        Pose2d stopPoint = new Pose2d(-59, -35, Math.toRadians(-179.9));
-        Pose2d pickupPoint = new Pose2d(-64, -35, Math.toRadians(-179.9));
+        Pose2d leftDeliverPose = new Pose2d(48, -30, Math.toRadians(0));
+        Pose2d centDeliverPose = new Pose2d(48, -35, Math.toRadians(0));
+        Pose2d cyclePoint = new Pose2d(24, -58, Math.toRadians(179.9));
+        Pose2d farCyclePoint = new Pose2d(-36, -58, Math.toRadians(179.9));
+        Pose2d stopPoint = new Pose2d(-59, -34, Math.toRadians(179.9));
+        Pose2d pickupPoint = new Pose2d(-64, -34, Math.toRadians(179.9));
 
         m_robot.drive.setPoseEstimate(startPose);
 
@@ -81,7 +81,7 @@ public class RedBackstage_Cycle extends LinearOpMode {
                 .splineToLinearHeading(stopPoint, 0)
                 .splineToLinearHeading(farCyclePoint, 0)
                 .splineToSplineHeading(cyclePoint, 0)
-                .splineToLinearHeading(rightDeliverPose.plus(new Pose2d(0,+5.5)), 0)
+                .splineToLinearHeading(rightDeliverPose.plus(new Pose2d(0,1)), 0)
                 .build();
 
         TrajectorySequence parkCent = m_robot.drive.trajectorySequenceBuilder(cycleDeliverCent.end())
@@ -118,7 +118,7 @@ public class RedBackstage_Cycle extends LinearOpMode {
                 .splineToLinearHeading(stopPoint, 0)
                 .splineToLinearHeading(farCyclePoint, 0)
                 .splineToSplineHeading(cyclePoint, 0)
-                .splineToSplineHeading(centDeliverPose.plus(new Pose2d(0,4)), 0)
+                .splineToSplineHeading(centDeliverPose.plus(new Pose2d(0,1,Math.toRadians(-4))), 0)
                 .build();
 
         TrajectorySequence parkRight = m_robot.drive.trajectorySequenceBuilder(deliverRight.end())
@@ -132,7 +132,7 @@ public class RedBackstage_Cycle extends LinearOpMode {
         TrajectorySequence dropLeft = m_robot.drive.trajectorySequenceBuilder(startPose)
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-90))
-                .lineToLinearHeading(new Pose2d(18, 32, Math.toRadians(179)))
+                .lineToLinearHeading(new Pose2d(18, -32, Math.toRadians(179)))
                 .build();
 
         TrajectorySequence deliverLeft = m_robot.drive.trajectorySequenceBuilder(dropLeft.end())
@@ -144,8 +144,8 @@ public class RedBackstage_Cycle extends LinearOpMode {
         TrajectorySequence parkLeft = m_robot.drive.trajectorySequenceBuilder(deliverLeft.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(-90))
-                .lineToLinearHeading(new Pose2d(deliverCent.end().getX() - 2, 60, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(60, 62, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(deliverCent.end().getX() - 2, -60, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(60, -62, Math.toRadians(0)))
                 .build();
 
 
@@ -179,8 +179,8 @@ public class RedBackstage_Cycle extends LinearOpMode {
             case RIGHT:
                 drop = dropRight;
                 deliver = deliverRight;
-                cycle = null;
-                cycleDeliver = null;
+                cycle = cycleRight;
+                cycleDeliver = cycleDeliverRight;
                 park = parkRight;
                 break;
             default:
