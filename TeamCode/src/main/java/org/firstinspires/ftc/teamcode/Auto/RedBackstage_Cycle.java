@@ -37,11 +37,11 @@ public class RedBackstage_Cycle extends LinearOpMode {
         Pose2d startPose = new Pose2d(12, -62, Math.toRadians(-90));
         Pose2d rightDeliverPose = new Pose2d(48, -44, Math.toRadians(0));
         Pose2d leftDeliverPose = new Pose2d(48, -30, Math.toRadians(0));
-        Pose2d centDeliverPose = new Pose2d(48, -35, Math.toRadians(0));
+        Pose2d centDeliverPose = new Pose2d(48, -36, Math.toRadians(0));
         Pose2d cyclePoint = new Pose2d(24, -58, Math.toRadians(179.9));
         Pose2d farCyclePoint = new Pose2d(-36, -58, Math.toRadians(179.9));
-        Pose2d stopPoint = new Pose2d(-59, -34, Math.toRadians(179.9));
-        Pose2d pickupPoint = new Pose2d(-64, -34, Math.toRadians(179.9));
+        Pose2d stopPoint = new Pose2d(-59, -33.5, Math.toRadians(179.9));
+        Pose2d pickupPoint = new Pose2d(-64, -33.5, Math.toRadians(179.9));
 
         m_robot.drive.setPoseEstimate(startPose);
 
