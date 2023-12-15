@@ -31,7 +31,7 @@ public class Arm {
     final double GRIPPER_RELEASE_ONE = 0.07;
     final double GRIPPER_HOLD_ALL = 0.1;
 
-    final double WIGGLE_WIGGLE = 0.03; //was +/-0.07
+    final double WIGGLE_WIGGLE = 0.04; //was +/-0.07
     final double WIGGLE_DELAY = 0.250;
 
     final double PUSHER_RETRACT = 0; //1.0

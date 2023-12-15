@@ -35,10 +35,11 @@ public class BlueWing_Bonus extends LinearOpMode {
         m_robot.arm.autoInit();
 
         double xPlace = 49;
+        double xPickup = -65;
         Pose2d startPose = new Pose2d(-36, 62, Math.toRadians(90));
         Pose2d rightDeliverPose = new Pose2d(xPlace, 27, Math.toRadians(0));
         Pose2d centDeliverPose = new Pose2d(xPlace, 32, Math.toRadians(0));
-        Pose2d leftDeliverPose = new Pose2d(xPlace, 38, Math.toRadians(0));
+        Pose2d leftDeliverPose = new Pose2d(xPlace, 39, Math.toRadians(0));
 
         m_robot.drive.setPoseEstimate(startPose);
 
@@ -63,7 +64,7 @@ public class BlueWing_Bonus extends LinearOpMode {
                 //.setVelConstraint(slowSpeed)
                 .turn(Math.toRadians(160))
                 .setTangent(Math.toRadians(-90))
-                .splineToLinearHeading(new Pose2d(-64.5, 12, Math.toRadians(179.99)), Math.toRadians(179.99))
+                .splineToLinearHeading(new Pose2d(xPickup, 12, Math.toRadians(179.99)), Math.toRadians(179.99))
                 .build();
 
         TrajectorySequence deliverCent = m_robot.drive.trajectorySequenceBuilder(pickupExtraCent.end())
@@ -113,7 +114,7 @@ public class BlueWing_Bonus extends LinearOpMode {
                 //.setVelConstraint(slowSpeed)
                 .turn(Math.toRadians(45))
                 .setTangent(Math.toRadians(-90))
-                .splineToConstantHeading(new Vector2d(-64.5, 12), Math.toRadians(179.99))
+                .splineToConstantHeading(new Vector2d(xPickup, 12), Math.toRadians(179.99))
                 .build();
 
         TrajectorySequence deliverRight = m_robot.drive.trajectorySequenceBuilder(pickupExtraRight.end())
@@ -155,7 +156,7 @@ public class BlueWing_Bonus extends LinearOpMode {
                 .turn(Math.toRadians(179.99))
                 .setTangent(Math.toRadians(179.99))
                 .splineToLinearHeading(new Pose2d(-50, 20, Math.toRadians(179.99)), Math.toRadians(179.99))
-                .splineToLinearHeading(new Pose2d(-64.5, 12, Math.toRadians(179.99)), Math.toRadians(179.99))
+                .splineToLinearHeading(new Pose2d(xPickup, 12, Math.toRadians(179.99)), Math.toRadians(179.99))
                 .build();
 
         TrajectorySequence deliverLeft = m_robot.drive.trajectorySequenceBuilder(pickupExtraLeft.end())
