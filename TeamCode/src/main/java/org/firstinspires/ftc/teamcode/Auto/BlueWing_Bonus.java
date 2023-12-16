@@ -37,8 +37,8 @@ public class BlueWing_Bonus extends LinearOpMode {
         double xPlace = 49;
         double xPickup = -65;
         Pose2d startPose = new Pose2d(-36, 62, Math.toRadians(90));
-        Pose2d rightDeliverPose = new Pose2d(xPlace, 27, Math.toRadians(0));
-        Pose2d centDeliverPose = new Pose2d(xPlace, 32, Math.toRadians(0));
+        Pose2d rightDeliverPose = new Pose2d(xPlace, 29, Math.toRadians(0));
+        Pose2d centDeliverPose = new Pose2d(xPlace, 33, Math.toRadians(0));
         Pose2d leftDeliverPose = new Pose2d(xPlace, 39, Math.toRadians(0));
 
         m_robot.drive.setPoseEstimate(startPose);

@@ -53,7 +53,7 @@ public class BlueBackstage extends LinearOpMode {
         TrajectorySequence deliverCent = m_robot.drive.trajectorySequenceBuilder(dropCent.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(47.5, 32, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(47.5, 33, Math.toRadians(0)))
                 .build();
 
         TrajectorySequence parkCent = m_robot.drive.trajectorySequenceBuilder(deliverCent.end())
@@ -94,7 +94,7 @@ public class BlueBackstage extends LinearOpMode {
         TrajectorySequence deliverRight = m_robot.drive.trajectorySequenceBuilder(dropRight.end())
                 //.setVelConstraint(slowSpeed)
                 .setTangent(Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(48, 26, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(48, 27, Math.toRadians(0)))
                 .build();
 
         TrajectorySequence parkRight = m_robot.drive.trajectorySequenceBuilder(deliverRight.end())

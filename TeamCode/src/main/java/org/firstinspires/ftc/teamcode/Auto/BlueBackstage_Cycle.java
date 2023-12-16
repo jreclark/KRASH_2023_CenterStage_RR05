@@ -35,8 +35,8 @@ public class BlueBackstage_Cycle extends LinearOpMode {
 
         Pose2d startPose = new Pose2d(12, 62, Math.toRadians(90));
         Pose2d leftDeliverPose = new Pose2d(48, 44, Math.toRadians(0));
-        Pose2d rightDeliverPose = new Pose2d(48, 26, Math.toRadians(0));
-        Pose2d centDeliverPose = new Pose2d(48, 32, Math.toRadians(0));
+        Pose2d rightDeliverPose = new Pose2d(48, 27, Math.toRadians(0));
+        Pose2d centDeliverPose = new Pose2d(48, 33, Math.toRadians(0));
         Pose2d cyclePoint = new Pose2d(24, 58, Math.toRadians(-179.9));
         Pose2d farCyclePoint = new Pose2d(-36, 58, Math.toRadians(-179.9));
         Pose2d stopPoint = new Pose2d(-59, 35, Math.toRadians(-179.9));
